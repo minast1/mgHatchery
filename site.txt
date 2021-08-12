@@ -1,0 +1,1 @@
+site Url = https://supabase-user-management-pied.vercel.app
