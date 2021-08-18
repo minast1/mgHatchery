@@ -17,26 +17,10 @@ import Paper from '@material-ui/core/Paper';
 import Link from '@material-ui/core/Link';
 import MenuIcon from '@material-ui/icons/Menu';
 import ChevronLeftIcon from '@material-ui/icons/ChevronLeft';
-import NotificationsIcon from '@material-ui/icons/Notifications';
 import { mainListItems, secondaryListItems } from '../lib/listItems';
 import ExitToAppIcon from '@material-ui/icons/ExitToApp';
-//import Chart from './Chart';
-//import Deposits from './Deposits';
-//import Orders from './Orders';
 import { supabase } from '../lib/supabaseClient';
-
-function Copyright() {
-  return (
-    <Typography variant="body2" color="textSecondary" align="center">
-      {'Copyright © '}
-      <Link color="inherit" href="https://material-ui.com/">
-        Your Website
-      </Link>{' '}
-      {new Date().getFullYear()}
-      {'.'}
-    </Typography>
-  );
-}
+import { useRouter } from 'next/router'
 
 const drawerWidth = 240;
 
@@ -121,7 +105,8 @@ const useStyles = makeStyles((theme) => ({
 
 export default function Layout() {
   const classes = useStyles();
-  const [open, setOpen] = React.useState(true);
+  const router = useRouter()
+  const [open, setOpen] = React.useState(false);
   const handleDrawerOpen = () => {
     setOpen(true);
   };

@@ -25,7 +25,7 @@ function MyApp({ Component, pageProps }: AppProps) {
     if (!userSession) {
             router.push('/')
     } else {
-      router.push('/Dashboard')
+     // router.push('/Dashboard')
       setSession(userSession)
      }
     

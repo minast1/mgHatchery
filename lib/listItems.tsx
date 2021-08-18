@@ -9,12 +9,17 @@ import PeopleIcon from '@material-ui/icons/People';
 import BarChartIcon from '@material-ui/icons/BarChart';
 import LayersIcon from '@material-ui/icons/Layers';
 import AssignmentIcon from '@material-ui/icons/Assignment';
+import router, { useRouter } from 'next/router'
+
 
 export const mainListItems = (
+  
   <div>
-    <ListItem button>
+    <ListItem button onClick={() => {
+         router.back()
+    }}>
       <ListItemIcon>
-        <DashboardIcon />
+        <DashboardIcon/>
       </ListItemIcon>
       <ListItemText primary="Dashboard" />
     </ListItem>

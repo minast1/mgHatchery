@@ -17,6 +17,12 @@ const theme = createTheme({
       default: '#e0e0e0',
     },
   },
+  typography: {
+    h6: {
+      fontWeight : 'inherit'
+    }
+  },
+  
 });
 
 export default theme;
