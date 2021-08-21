@@ -2,7 +2,7 @@ import React from 'react';
 import { makeStyles } from '@material-ui/core/styles';
 import Box from '@material-ui/core/Box';
 import Container from '@material-ui/core/Container';
-import { GetStaticProps, GetStaticPropsContext} from 'next'
+import { GetStaticProps, GetStaticPropsContext } from 'next'
 import Layout from '../../components/Layout';
 import { useRouter } from 'next/router'
 import Copyright from '../../components/Copyright';
@@ -30,39 +30,39 @@ const useStyles = makeStyles((theme) => ({
     display: 'flex',
     alignItems: 'center',
     [theme.breakpoints.down('md')]: {
-      width: 300 
+      width: 300
     },
     width: 500,
     border: '1px solid lightgray',
-    borderRadius : 5
+    borderRadius: 5
   },
   iconButton: { padding: 10 },
   input: {
-  
+
     "& input:focus $searchForm": {
-             border: '1px solid yellow'
-       },
+      border: '1px solid yellow'
+    },
     marginLeft: theme.spacing(1),
-    flex: 1 ,
+    flex: 1,
   }
 }));
 
 
-export default function Dashboard({data}: {data : Invoice[] | []}) {
+export default function Dashboard({ data }: { data: Invoice[] | [] }) {
   const classes = useStyles();
   const setData = dataStore(state => state.setData);
 
   React.useEffect(() => {
     data && setData(data)
   }, []);
-   //console.log(data);
+  //console.log(data);
   return (
     <div className={classes.root}>
-        <Layout/>
+      <Layout />
       <main className={classes.content}>
         <div className={classes.appBarSpacer} />
         <Container maxWidth="lg" className={classes.container}>
-              <Main /> 
+          <Main />
           <Box pt={4}>
             <Copyright />
           </Box>
@@ -72,29 +72,28 @@ export default function Dashboard({data}: {data : Invoice[] | []}) {
   );
 }
 
-export const getStaticProps: GetStaticProps = async(
-    context: GetStaticPropsContext
+export const getStaticProps: GetStaticProps = async (
+  context: GetStaticPropsContext
 ) => {
 
-let { data: Invoice, error } = await supabase
+  let { data: Invoice, error } = await supabase
     .from('Invoice')
     .select(`
    id, date, invoice_id, name, address, phone, amount,
    Item (
-      description, quantity, rate, amount)`).order('id', {ascending: false})
+      description, quantity, rate, amount)`).order('id', { ascending: false })
 
   if (error) {
     console.log(error);
-   /* return {
-     true// notFound: true, 
-    }*/
+    /* return {
+      true// notFound: true, 
+     }*/
   }
-    return {
-        props: {
-        protected: true,
-          data: Invoice
-        }
+  return {
+    props: {
+      protected: true,
+      data: Invoice
     }
+  }
 }
 
-   

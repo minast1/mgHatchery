@@ -1,10 +1,10 @@
-import { useState, useEffect} from 'react';
+import { useState, useEffect } from 'react';
 import { invoiceState, obj, useInvoiceStore } from '../lib/invoiceStore';
 import { Box, Button, Card, CardContent, CardHeader, Divider, Grid, TextField } from '@material-ui/core';
 import IContainer from './IContainer';
 import Snackbar from '@material-ui/core/Snackbar';
 import MuiAlert, { AlertProps } from '@material-ui/lab/Alert';
-import { InvoiceItem ,Invoice} from '../lib/supabaseStore';
+import { InvoiceItem, Invoice } from '../lib/supabaseStore';
 import { supabase } from '../lib/supabaseClient';
 
 
@@ -14,7 +14,7 @@ function Alert(props: AlertProps) {
 }
 
 const Generator = () => {
-  
+
   const [itemCount, setItemCount] = useState<number>(0);
   const [itemContainer, setContainer] = useState<obj[]>([]);
   const [itemAdded, setItemAdded] = useState<boolean>(false);
@@ -25,47 +25,47 @@ const Generator = () => {
 
 
 
-  const [open, setOpen] = useState(false);
+  const [open, setOpen] = useState<boolean>(false);
 
   const handleClick = () => {
     setOpen(true);
   };
 
   const handleClose = () => {
-   
+
 
     setOpen(false);
   };
-   
-  
 
- useEffect(() => {
-   setContainer(Array.from({length : itemCount}, () => ({} as obj)))
- }, [itemCount]);
-  
+
+
+  useEffect(() => {
+    setContainer(Array.from({ length: itemCount }, () => ({} as obj)))
+  }, [itemCount]);
+
   const createInvoiceWithItems = async () => {
-     
+
     const { data: Invoice, error } = await supabase
       .from('Invoice')
       .insert([formData]).single();
     //Then add the items to the created invoice
-      if (Invoice) {
+    if (Invoice) {
       Items.forEach(async (item) => {
         const Itemamount = item.rate * item.quantity
-        const { data:Item, error } = await supabase
-        .from('Item')
-         .insert([{...item,invoiceId: Invoice.id, amount:Itemamount}])
+        const { data: Item, error } = await supabase
+          .from('Item')
+          .insert([{ ...item, invoiceId: Invoice.id, amount: Itemamount }])
       })
-           
+
     }
     setFormData({})
     resetItems()
- }
+  }
   return (
     <form
       autoComplete="off"
     >
-     
+
       <Card>
         <CardHeader
           subheader="Generate invoice with the following details"
@@ -87,31 +87,31 @@ const Generator = () => {
                 helperText="Please specify a new invoice id"
                 label="Invoice Id"
                 name="id"
-                onChange={(event) => { setFormData({ ...formData, invoice_id: event.target.value })}}
+                onChange={(event) => { setFormData({ ...formData, invoice_id: event.target.value }) }}
                 required
-                
+
                 variant="outlined"
               />
             </Grid>
-           
-               <Grid
+
+            <Grid
               item
               md={6}
               xs={12}
             >
-               <TextField
-                 id="date"
-             label="Date"
+              <TextField
+                id="date"
+                label="Date"
                 type="date"
-                onChange={(event) => {setFormData({ ...formData, date: event.target.value })}}
-           defaultValue="2021-05-24"
-           variant="outlined"
-           InputLabelProps={{
-               shrink: true,
-                 }}
-                />
+                onChange={(event) => { setFormData({ ...formData, date: event.target.value }) }}
+                defaultValue="2021-05-24"
+                variant="outlined"
+                InputLabelProps={{
+                  shrink: true,
+                }}
+              />
             </Grid>
-             
+
 
             <Grid
               item
@@ -122,12 +122,12 @@ const Generator = () => {
                 fullWidth
                 label="Customer Name"
                 name="name"
-                onChange={(event) => { setFormData({ ...formData, name: event.target.value })}}
+                onChange={(event) => { setFormData({ ...formData, name: event.target.value }) }}
                 required
                 variant="outlined"
               />
             </Grid>
-            
+
             <Grid
               item
               md={6}
@@ -137,7 +137,7 @@ const Generator = () => {
                 fullWidth
                 label="Address"
                 name="address"
-                onChange={(event) => {setFormData({ ...formData, address: event.target.value })}}
+                onChange={(event) => { setFormData({ ...formData, address: event.target.value }) }}
                 required
                 variant="outlined"
               />
@@ -151,7 +151,7 @@ const Generator = () => {
                 fullWidth
                 label="Phone"
                 name="telephone"
-                onChange={(event) => {setFormData({ ...formData, phone: Number(event.target.value) })}}
+                onChange={(event) => { setFormData({ ...formData, phone: Number(event.target.value) }) }}
                 required
                 type="number"
                 variant="outlined"
@@ -166,7 +166,7 @@ const Generator = () => {
                 fullWidth
                 label="Amount"
                 name="amount"
-                onChange={(event) => {setFormData({ ...formData, amount: Number(event.target.value) })}}
+                onChange={(event) => { setFormData({ ...formData, amount: Number(event.target.value) }) }}
                 required
                 type="number"
                 variant="outlined"
@@ -175,40 +175,40 @@ const Generator = () => {
           </Grid>
         </CardContent>
 
-         <CardHeader
+        <CardHeader
           subheader="Toggle to select number of items to add"
-            title={ <TextField
-                
-              label="Items Count"
-              style={{ marginTop: 10}}
-              size="small"
-                name="itemCount"
-              onChange={(event) => {
-                setItemCount(Number(event.target.value))
-              }}
-                required
-                type="number"
-                value={itemCount}
-                variant="outlined"
-              />}
-          
+          title={<TextField
+
+            label="Items Count"
+            style={{ marginTop: 10 }}
+            size="small"
+            name="itemCount"
+            onChange={(event) => {
+              setItemCount(Number(event.target.value))
+            }}
+            required
+            type="number"
+            value={itemCount}
+            variant="outlined"
+          />}
+
         />
         <Divider />
-      
+
         <CardContent>
           {
             itemContainer && itemContainer.map((el, index) => (
-              
-              (<IContainer key={index} productItem={el} toggleSnack={handleClick}/>)
+
+              (<IContainer key={index} productItem={el} toggleSnack={handleClick} />)
             ))
-         }  
+          }
         </CardContent>
-         <Snackbar open={open} autoHideDuration={7000} onClose={handleClose}>
-             <Alert onClose={handleClose} severity="error">
-                 Item fields cannot be blank!
-                Please fill the form accordingly
-               </Alert>
-               </Snackbar>
+        <Snackbar open={open} autoHideDuration={7000} onClose={handleClose}>
+          <Alert onClose={handleClose} severity="error">
+            Item fields cannot be blank!
+            Please fill the form accordingly
+          </Alert>
+        </Snackbar>
         <Box
           sx={{
             display: 'flex',
@@ -222,7 +222,7 @@ const Generator = () => {
               event.preventDefault();
               createInvoiceWithItems()
             }}
-            disabled={Object.entries(formData).length !==6 ? true : false}
+            disabled={Object.entries(formData).length !== 6 ? true : false}
             variant="contained"
           >
             Save details
