@@ -130,8 +130,9 @@ export default function Layout() {
             <MenuIcon />
           </IconButton>
           <Typography component="h1" variant="h6" color="inherit" noWrap className={classes.title}>
-            Dashboard
+            MG-Hatchery
           </Typography>
+                   LOGOUT
                   <IconButton color="inherit" onClick={async(e) => {
                       e.preventDefault();
                       try {

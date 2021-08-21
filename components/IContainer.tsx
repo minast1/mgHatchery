@@ -2,7 +2,7 @@ import { Button, Grid, TextField } from '@material-ui/core'
 import React from 'react'
 import { useState } from 'react';
 import { invoiceState, obj, useInvoiceStore } from '../lib/invoiceStore';
-import { snackbarStore } from '../lib/snackbarStore';
+
 
 
 const IContainer = ({ productItem , toggleSnack}: { productItem: obj , toggleSnack: () => void}) => {

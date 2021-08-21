@@ -2,13 +2,13 @@ import React from 'react';
 import { makeStyles } from '@material-ui/core/styles';
 import Box from '@material-ui/core/Box';
 import Container from '@material-ui/core/Container';
-import { GetStaticProps, GetStaticPropsContext } from 'next'
-import { useStore } from '../../lib/sessionStore';
+import { GetStaticProps, GetStaticPropsContext} from 'next'
 import Layout from '../../components/Layout';
 import { useRouter } from 'next/router'
 import Copyright from '../../components/Copyright';
 import Main from '../../components/Main';
-import Invoice from '../../components/Invoice';
+import { supabase } from '../../lib/supabaseClient';
+import { dataStore, Invoice, supabaseStoreState } from '../../lib/supabaseStore';
 
 
 const useStyles = makeStyles((theme) => ({
@@ -47,10 +47,15 @@ const useStyles = makeStyles((theme) => ({
   }
 }));
 
-export default function Dashboard() {
+
+export default function Dashboard({data}: {data : Invoice[] | []}) {
   const classes = useStyles();
-  const router = useRouter()
-   
+  const setData = dataStore(state => state.setData);
+
+  React.useEffect(() => {
+    data && setData(data)
+  }, []);
+   //console.log(data);
   return (
     <div className={classes.root}>
         <Layout/>
@@ -70,9 +75,24 @@ export default function Dashboard() {
 export const getStaticProps: GetStaticProps = async(
     context: GetStaticPropsContext
 ) => {
+
+let { data: Invoice, error } = await supabase
+    .from('Invoice')
+    .select(`
+   id, date, invoice_id, name, address, phone, amount,
+   Item (
+      description, quantity, rate, amount)`).order('id', {ascending: false})
+
+  if (error) {
+    console.log(error);
+   /* return {
+     true// notFound: true, 
+    }*/
+  }
     return {
         props: {
-            protected: true
+        protected: true,
+          data: Invoice
         }
     }
 }

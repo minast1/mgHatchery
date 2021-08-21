@@ -1,10 +1,11 @@
 import { useState, useEffect} from 'react';
 import { invoiceState, obj, useInvoiceStore } from '../lib/invoiceStore';
-import shallow from 'zustand/shallow';
-import { Box, Button, Card, CardContent, CardHeader, Divider, Grid, List, ListItem, TextField } from '@material-ui/core';
+import { Box, Button, Card, CardContent, CardHeader, Divider, Grid, TextField } from '@material-ui/core';
 import IContainer from './IContainer';
 import Snackbar from '@material-ui/core/Snackbar';
 import MuiAlert, { AlertProps } from '@material-ui/lab/Alert';
+import { InvoiceItem ,Invoice} from '../lib/supabaseStore';
+import { supabase } from '../lib/supabaseClient';
 
 
 
@@ -13,29 +14,17 @@ function Alert(props: AlertProps) {
 }
 
 const Generator = () => {
-  const { id, firstname, lastname, location, telephone, date, items, setId, setDate,
-  setFirstname, setLastname, setLocation, setTelephone, setItems} = useInvoiceStore<invoiceState>(state =>
-  ({
-    id: state.id,
-    firstname: state.firstname,
-    lastname: state.lastname,
-    location: state.location,
-    telephone: state.telephone,
-    date: state.date,
-    items: state.items,
-    setDate: state.setDate,
-    setFirstname: state.setFirstname,
-    setLocation: state.setLocation,
-    setLastname: state.setLastname,
-    setItems: state.setItems,
-    setId: state.setId,
-    setTelephone : state.setTelephone
-  }), shallow
-  )
-
+  
   const [itemCount, setItemCount] = useState<number>(0);
   const [itemContainer, setContainer] = useState<obj[]>([]);
   const [itemAdded, setItemAdded] = useState<boolean>(false);
+  const [formData, setFormData] = useState<Invoice | {}>({} as Invoice);
+  const Items = useInvoiceStore(state => state.items);
+  const resetItems = useInvoiceStore(state => state.resetItems);
+
+
+
+
   const [open, setOpen] = useState(false);
 
   const handleClick = () => {
@@ -48,16 +37,33 @@ const Generator = () => {
     setOpen(false);
   };
    
+  
 
  useEffect(() => {
    setContainer(Array.from({length : itemCount}, () => ({} as obj)))
  }, [itemCount]);
   
-  
+  const createInvoiceWithItems = async () => {
+     
+    const { data: Invoice, error } = await supabase
+      .from('Invoice')
+      .insert([formData]).single();
+    //Then add the items to the created invoice
+      if (Invoice) {
+      Items.forEach(async (item) => {
+        const Itemamount = item.rate * item.quantity
+        const { data:Item, error } = await supabase
+        .from('Item')
+         .insert([{...item,invoiceId: Invoice.id, amount:Itemamount}])
+      })
+           
+    }
+    setFormData({})
+    resetItems()
+ }
   return (
     <form
       autoComplete="off"
-      noValidate
     >
      
       <Card>
@@ -81,9 +87,9 @@ const Generator = () => {
                 helperText="Please specify a new invoice id"
                 label="Invoice Id"
                 name="id"
-                onChange={(event) => {setId(event.target.value)}}
+                onChange={(event) => { setFormData({ ...formData, invoice_id: event.target.value })}}
                 required
-                value={id}
+                
                 variant="outlined"
               />
             </Grid>
@@ -96,8 +102,9 @@ const Generator = () => {
                <TextField
                  id="date"
              label="Date"
-            type="date"
-           defaultValue="2017-05-24"
+                type="date"
+                onChange={(event) => {setFormData({ ...formData, date: event.target.value })}}
+           defaultValue="2021-05-24"
            variant="outlined"
            InputLabelProps={{
                shrink: true,
@@ -113,14 +120,14 @@ const Generator = () => {
             >
               <TextField
                 fullWidth
-                label="Customer Firstname"
-                name="firstname"
-                onChange={(event) => { setFirstname(event.target.value) }}
+                label="Customer Name"
+                name="name"
+                onChange={(event) => { setFormData({ ...formData, name: event.target.value })}}
                 required
-                value={firstname}
                 variant="outlined"
               />
             </Grid>
+            
             <Grid
               item
               md={6}
@@ -128,25 +135,10 @@ const Generator = () => {
             >
               <TextField
                 fullWidth
-                label="Customer Lastname"
-                name="lastname"
-                onChange={(event) => {setLastname(event.target.value)}}
-                value={lastname}
-                variant="outlined"
-              />
-            </Grid>
-            <Grid
-              item
-              md={6}
-              xs={12}
-            >
-              <TextField
-                fullWidth
-                label="Location"
-                name="location"
-                onChange={(event) => {setLocation(event.target.value)}}
+                label="Address"
+                name="address"
+                onChange={(event) => {setFormData({ ...formData, address: event.target.value })}}
                 required
-                value={location}
                 variant="outlined"
               />
             </Grid>
@@ -157,12 +149,26 @@ const Generator = () => {
             >
               <TextField
                 fullWidth
-                label="Contact"
+                label="Phone"
                 name="telephone"
-                onChange={(event) => {setTelephone(event?.target.value)}}
+                onChange={(event) => {setFormData({ ...formData, phone: Number(event.target.value) })}}
                 required
                 type="number"
-                value={telephone}
+                variant="outlined"
+              />
+            </Grid>
+            <Grid
+              item
+              md={6}
+              xs={12}
+            >
+              <TextField
+                fullWidth
+                label="Amount"
+                name="amount"
+                onChange={(event) => {setFormData({ ...formData, amount: Number(event.target.value) })}}
+                required
+                type="number"
                 variant="outlined"
               />
             </Grid>
@@ -170,13 +176,11 @@ const Generator = () => {
         </CardContent>
 
          <CardHeader
-          subheader="Select number of items to add"
-            title="Items"
-          action={
-              <TextField
-                fullWidth
+          subheader="Toggle to select number of items to add"
+            title={ <TextField
+                
               label="Items Count"
-              style={{ marginTop: 20}}
+              style={{ marginTop: 10}}
               size="small"
                 name="itemCount"
               onChange={(event) => {
@@ -186,8 +190,8 @@ const Generator = () => {
                 type="number"
                 value={itemCount}
                 variant="outlined"
-              />
-          }
+              />}
+          
         />
         <Divider />
       
@@ -214,6 +218,11 @@ const Generator = () => {
         >
           <Button
             color="primary"
+            onClick={(event) => {
+              event.preventDefault();
+              createInvoiceWithItems()
+            }}
+            disabled={Object.entries(formData).length !==6 ? true : false}
             variant="contained"
           >
             Save details

@@ -20,7 +20,7 @@ const useStyles = makeStyles((theme) => ({
     height: 42,
     border: '1px solid darkgray',
     borderRadius: 5,
-    marginBottom: 30 
+    marginBottom: 20 
   },
   iconButton: { padding: 10 },
   input: {

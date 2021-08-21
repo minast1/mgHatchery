@@ -53,7 +53,7 @@ function MyApp({ Component, pageProps }: AppProps) {
     if (pageProps.protected && !Usession) {
       return (
         <Container maxWidth="xs" style={{marginTop : 170}}>
-              <h1>Unauthorized!....</h1>
+              <h1>Loading!....</h1>
         </Container>
       )
       
