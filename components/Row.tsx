@@ -92,9 +92,12 @@ function Row({ invoiceItem }: { invoiceItem: Invoice }) {
            <Grid container>
             <Grid item xs={6} sm={12} md={6}>
               <IconButton
-                aria-label="delete"
+                href={`/Dashboard/${encodeURIComponent(invoiceItem.id)}`}
+                aria-label="print"
                 size="small"
-                onClick={(event) => deleteInvoiceWithItems(invoiceItem.id)}
+                onClick={(event) => {
+                   
+                 }}
                 color="primary"
                   >
                 <PrintIcon />
@@ -104,6 +107,7 @@ function Row({ invoiceItem }: { invoiceItem: Invoice }) {
               <IconButton
                 aria-label="delete"
                 size="small"
+               onClick={(event) => deleteInvoiceWithItems(invoiceItem.id)}
                 style={{color: 'red'}}
                 >
                 <DeleteIcon />
@@ -124,9 +128,9 @@ function Row({ invoiceItem }: { invoiceItem: Invoice }) {
                 <TableHead>
                   <TableRow>
                     <TableCell>Description</TableCell>
-                    <TableCell>Rate</TableCell>
+                    <TableCell>Rate (GH₵)</TableCell>
                     <TableCell align="right">Quantity</TableCell>
-                    <TableCell align="right">Total price ($)</TableCell>
+                    <TableCell align="right">Total price (₵)</TableCell>
                   </TableRow>
                 </TableHead>
                 <TableBody>
@@ -135,7 +139,7 @@ function Row({ invoiceItem }: { invoiceItem: Invoice }) {
                       <TableCell component="th" scope="row">
                         {itemRow.description}
                       </TableCell>
-                      <TableCell>{`${itemRow.rate}GH`}</TableCell>
+                      <TableCell>{`${itemRow.rate}GH₵`}</TableCell>
                       <TableCell align="right">{itemRow.quantity}</TableCell>
                       <TableCell align="right">
                         {itemRow.amount}

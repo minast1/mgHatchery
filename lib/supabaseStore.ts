@@ -24,7 +24,7 @@ export type Invoice = {
 
 
 export interface supabaseStoreState {
-    data: Invoice[] | []
+    data: Invoice[] 
     setData: (item: Invoice[]) => void
     updateData: (items: Invoice[]) => void
 }

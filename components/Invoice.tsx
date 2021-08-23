@@ -48,10 +48,8 @@ const Invoice = () => {
   }
 //console.log(logo);
     return (   
-       <Document>
-        <Page size="A4" style={styles.page}>
-         
-         <Container maxWidth="md">
+       
+         <Container maxWidth={false}>
           <Grid container>
             <Grid item xs={12}>
               <Box display="flex" alignItems="flex-start" mt={5}>
@@ -130,9 +128,6 @@ const Invoice = () => {
               <Grid item style={{ height: 100}}></Grid>
             </Grid>
             </Container>
-            
-    </Page>
-  </Document>
     )
 }
 

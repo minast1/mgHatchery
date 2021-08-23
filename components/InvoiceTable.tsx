@@ -51,7 +51,7 @@ export default function CollapsibleTable() {
 
             <TableCell align="left">CUST. NAME</TableCell>
             
-            <TableCell align="left">AMOUNT</TableCell>
+            <TableCell align="left">AMOUNT (GH₵)</TableCell>
              <TableCell align="left">CUST.CONTACT</TableCell>
             <TableCell align="left">TRANSACTION STATUS</TableCell>
             <TableCell align="center">ACTIONS</TableCell>
