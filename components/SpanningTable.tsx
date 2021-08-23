@@ -14,11 +14,15 @@ const TAX_RATE = 0.07;
 const useStyles = makeStyles({
   table: {
     minWidth: 700,
-    },
-    font: {
-        fontWeight: 'bold',
-        fontSize : 16
-    }
+  },
+  font: {
+    fontWeight: 'bold',
+    fontSize: 14
+  },
+  balancefont: {
+    fontWeight: 'bold',
+    fontSize: 16
+  }
 });
 
 function ccyFormat(num: number) {
@@ -60,8 +64,8 @@ export default function SpanningTable() {
 
   return (
     <TableContainer>
-          <Table className={classes.table} aria-label="spanning table">
-            
+      <Table className={classes.table} aria-label="spanning table">
+
         <TableHead>
           <TableRow>
             <TableCell>DESCRIPTION</TableCell>
@@ -81,21 +85,21 @@ export default function SpanningTable() {
           ))}
           <TableRow>
             <TableCell rowSpan={3} />
-                      <TableCell colSpan={2} align="right" classes={{ root: classes.font }}>TOTAL</TableCell>
+            <TableCell colSpan={2} align="right" classes={{ root: classes.font }}>TOTAL</TableCell>
             <TableCell align="right">{ccyFormat(invoiceSubtotal)}</TableCell>
           </TableRow>
           <TableRow>
             <TableCell></TableCell>
-            <TableCell align="right" classes={{ root: classes.font }}>PAID</TableCell>
-            <TableCell align="right">{ccyFormat(invoiceTaxes)}</TableCell>
+            <TableCell align="right" classes={{ root: classes.font }} style={{ borderBottomColor: '#42a5f5' }}>PAID</TableCell>
+            <TableCell align="right" style={{ borderBottomColor: '#42a5f5' }}>{ccyFormat(invoiceTaxes)}</TableCell>
           </TableRow>
           <TableRow>
-            <TableCell colSpan={2} align="right" classes={{ root: classes.font }}>BALANCE DUE GHC</TableCell>
-            
-            <TableCell align="right">{ccyFormat(invoiceTotal)}</TableCell>
+            <TableCell colSpan={2} align="right" classes={{ root: classes.balancefont }}>BALANCE DUE GHC</TableCell>
+
+            <TableCell align="right" classes={{ root: classes.balancefont }}>{ccyFormat(invoiceTotal)}</TableCell>
           </TableRow>
-              </TableBody>
-            
+        </TableBody>
+
       </Table>
     </TableContainer>
   );

@@ -18,11 +18,12 @@ const theme = createTheme({
     },
   },
   typography: {
+
     h6: {
-      fontWeight : 'inherit'
+      fontWeight: 'inherit'
     }
   },
-  
+
 });
 
 export default theme;

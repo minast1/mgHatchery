@@ -1,4 +1,4 @@
-import { IconButton, TableBody, TableCell, TableRow, Button, Chip, Collapse, Box, Table, TableHead, Grid } from '@material-ui/core'
+import { IconButton, TableBody, TableCell, TableRow, Button, Chip, Collapse, Box, Table, TableHead, Grid, Typography } from '@material-ui/core'
 import React from 'react'
 import KeyboardArrowDownIcon from '@material-ui/icons/KeyboardArrowDown';
 import KeyboardArrowUpIcon from '@material-ui/icons/KeyboardArrowUp';
@@ -15,7 +15,11 @@ const useRowStyles = makeStyles({
     '& > *': {
       borderBottom: 'unset',
     },
+
   },
+  /* delete: {
+    // "&:hover": { backgroundColor: "red" },
+     //"&:focus": { backgroundColor: "red" }}*/
 });
 
 
@@ -42,6 +46,10 @@ function Row({ invoiceItem }: { invoiceItem: Invoice }) {
     return balance
   }
 
+  function ccyFormat(num: number) {
+    return `${num.toFixed(2)}`;
+  }
+
   React.useEffect(() => {
     const bal = getBalance(invoiceItem)
     setBalance(bal)
@@ -55,80 +63,90 @@ function Row({ invoiceItem }: { invoiceItem: Invoice }) {
   }
   ///console.log(amts);
   return (
-    <TableBody>
-      <TableRow className={classes.root}>
+    <React.Fragment>
+      <TableRow className={classes.root} hover>
         <TableCell>
           <IconButton aria-label="expand row" size="small" onClick={() => setOpen(!open)}>
             {open ? <KeyboardArrowUpIcon /> : <KeyboardArrowDownIcon />}
           </IconButton>
         </TableCell>
-
-        <TableCell>{invoiceItem.date}</TableCell>
-        <TableCell>{invoiceItem.name}</TableCell>
-        <TableCell>{invoiceItem.phone}</TableCell>
-        <TableCell>{invoiceItem.amount}GH</TableCell>
-        <TableCell align="center">
-          {
-
-            balance === 0 ?
-              <Chip
-                style={{ backgroundColor: 'green' }}
-                size="small"
-                label="Transaction Complete"
-                color="secondary"
-                icon={<DoneIcon />}
-              /> : <Chip
-                style={{ backgroundColor: 'red' }}
-                size="small"
-                label="Pending Balance"
-                color="secondary"
-                icon={<ErrorOutlineOutlinedIcon />}
-              />
-          }
+        <TableCell component="th" scope="row">
+          {invoiceItem.name}
         </TableCell>
-        <TableCell align="right" style={{ borderBottom: '1px solid lightgray' }}>
+
+        <TableCell align="left">{ccyFormat(invoiceItem.amount)}</TableCell>
+        <TableCell align="left">{invoiceItem.phone}</TableCell>
+        <TableCell align="left">{
+          balance === 0 ?
+            <Chip
+              style={{ backgroundColor: 'green' }}
+              size="small"
+              label="Transaction Complete"
+              color="secondary"
+              icon={<DoneIcon />}
+            /> : <Chip
+              style={{ backgroundColor: 'red' }}
+              size="small"
+              label="Pending Balance"
+              color="secondary"
+              icon={<ErrorOutlineOutlinedIcon />}
+            />
+        }</TableCell>
+        <TableCell align="left">{
           <Grid container>
             <Grid item xs={6} sm={12} md={6}>
-              <Button variant="contained" size="small" color="primary"><PrintIcon /></Button>
+              <IconButton
+                href={`/Dashboard/${encodeURIComponent(invoiceItem.id)}`}
+                aria-label="print"
+                size="small"
+                onClick={(event) => {
+
+                }}
+                color="primary"
+              >
+                <PrintIcon />
+              </IconButton>
             </Grid>
             <Grid item xs={6} sm={12} md={6}>
-              <Button
-                variant="contained"
+              <IconButton
+                aria-label="delete"
                 size="small"
-                color="secondary"
-                style={{ backgroundColor: 'red' }}
                 onClick={(event) => deleteInvoiceWithItems(invoiceItem.id)}
-              ><DeleteIcon /></Button>
+                style={{ color: 'red' }}
+              >
+                <DeleteIcon />
+              </IconButton>
+
             </Grid>
           </Grid>
-        </TableCell>
+        }</TableCell>
       </TableRow>
-
-
       <TableRow>
         <TableCell style={{ paddingBottom: 0, paddingTop: 0 }} colSpan={6}>
           <Collapse in={open} timeout="auto" unmountOnExit>
-            <Box margin={1} bgcolor="lightgray">
-
+            <Box margin={1} bgcolor="#f5f5f5">
+              <Typography variant="subtitle1" style={{ fontWeight: 'bold', paddingLeft: 15 }} gutterBottom component="div">
+                {`Tansaction date: ${invoiceItem.date}`}
+              </Typography>
               <Table size="small" aria-label="purchases">
                 <TableHead>
                   <TableRow>
-                    <TableCell colSpan={6}>Description</TableCell>
-                    <TableCell>Rate</TableCell>
+                    <TableCell>Description</TableCell>
+                    <TableCell>Rate (GH₵)</TableCell>
                     <TableCell align="right">Quantity</TableCell>
-                    <TableCell align="right">Total Amount($)</TableCell>
+                    <TableCell align="right">Total price (₵)</TableCell>
                   </TableRow>
                 </TableHead>
                 <TableBody>
-                  {invoiceItem.Item?.map((el, index) => (
+                  {invoiceItem.Item.map((itemRow, index) => (
                     <TableRow key={index}>
-                      <TableCell component="th" scope="row" colSpan={6}>
-                        {el.description}
+                      <TableCell component="th" scope="row">
+                        {itemRow.description}
                       </TableCell>
-                      <TableCell>{`${el.rate}GH`}</TableCell>
-                      <TableCell align="right">{el.quantity}</TableCell>
+                      <TableCell>{`${ccyFormat(itemRow.rate)}GH₵`}</TableCell>
+                      <TableCell align="right">{itemRow.quantity}</TableCell>
                       <TableCell align="right">
-                        {`${el.amount}GH`}
+                        {ccyFormat(itemRow.amount)}
                       </TableCell>
                     </TableRow>
                   ))}
@@ -138,8 +156,7 @@ function Row({ invoiceItem }: { invoiceItem: Invoice }) {
           </Collapse>
         </TableCell>
       </TableRow>
-
-    </TableBody>
+    </React.Fragment>
   )
 }
 

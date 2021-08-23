@@ -6,7 +6,7 @@ import TableContainer from '@material-ui/core/TableContainer';
 import TableHead from '@material-ui/core/TableHead';
 import TableRow from '@material-ui/core/TableRow';
 import Paper from '@material-ui/core/Paper';
-import { TableFooter, TablePagination } from '@material-ui/core';
+import { TableBody, TableFooter, TablePagination } from '@material-ui/core';
 import { dataStore } from '../lib/supabaseStore';
 import Row from './Row';
 import { supabase } from '../lib/supabaseClient';
@@ -20,7 +20,7 @@ export default function CollapsibleTable() {
   const setData = dataStore(state => state.setData);
   const updateData = dataStore(state => state.updateData);
 
-  const handleChangePage = (event: React.MouseEvent<HTMLButtonElement> | null, newPage: number) => {
+  const handleChangePage = (event: unknown, newPage: number) => {
     setPage(newPage);
   };
 
@@ -40,29 +40,34 @@ export default function CollapsibleTable() {
     const mySubscription = supabase.from('Item').on('*', () => fetchInvoices()).subscribe()
     return () => { supabase.removeSubscription(mySubscription) }
   }, []);
-  // console.log(data);
-
+  //console.log(data);
+  
   return (
     <TableContainer component={Paper}>
-      <Table aria-label="collapsible table">
+            <Table aria-label="collapsible table">
         <TableHead>
           <TableRow>
-            <TableCell>ITEMS</TableCell>
+            <TableCell/>
 
-            <TableCell align="left">DATE</TableCell>
             <TableCell align="left">CUST. NAME</TableCell>
-            <TableCell align="left">CONTACT</TableCell>
-            <TableCell align="left">AMOUNT</TableCell>
-            <TableCell align="center">STATUS</TableCell>
-            <TableCell align="right">ACTIONS</TableCell>
+            
+            <TableCell align="left">AMOUNT (GH₵)</TableCell>
+             <TableCell align="left">CUST.CONTACT</TableCell>
+            <TableCell align="left">TRANSACTION STATUS</TableCell>
+            <TableCell align="center">ACTIONS</TableCell>
           </TableRow>
         </TableHead>
 
-        {
-          data.map(el => (
-            <Row key={el.id} invoiceItem={el} />
-          ))
-        }
+        <TableBody>
+           {(rowsPerPage > 0
+            ? data.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
+            : data
+          ).map((row) => (
+              <Row key={row.id} invoiceItem={row} />
+          ))}
+           
+        </TableBody>
+
         <TableFooter>
           <TableRow>
             <TablePagination
@@ -74,7 +79,6 @@ export default function CollapsibleTable() {
           </TableRow>
         </TableFooter>
       </Table>
-
     </TableContainer>
   );
 }

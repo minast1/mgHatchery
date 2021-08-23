@@ -8,15 +8,15 @@ import { MaterialUiPickersDate } from '@material-ui/pickers/typings/date';
 export type obj = { description: string; rate: number; quantity: number; amount?: number }
 
 
-export interface invoiceState {
+export interface invoiceState<T extends obj> {
    
-    items: { description: string, rate: number, quantity: number, }[] | []
-    setItems: (goods: obj) => void
+    items: T[]
+    setItems: (goods: T) => void
     resetItems: () => void
 
 }
 
-export const useInvoiceStore =  create<invoiceState>((set, get) => ({
+export const useInvoiceStore =  create<invoiceState<obj>>((set, get) => ({
    
     items: [],
     setItems: (goods) => set(state => ({ items: [...state.items, goods] })),
