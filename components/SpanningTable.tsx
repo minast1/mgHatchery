@@ -6,8 +6,8 @@ import TableCell from '@material-ui/core/TableCell';
 import TableContainer from '@material-ui/core/TableContainer';
 import TableHead from '@material-ui/core/TableHead';
 import TableRow from '@material-ui/core/TableRow';
-import Paper from '@material-ui/core/Paper';
-import { Box, Grid, TableFooter } from '@material-ui/core';
+import { InvoiceItem } from '../lib/supabaseStore';
+
 
 const TAX_RATE = 0.07;
 
@@ -26,7 +26,7 @@ const useStyles = makeStyles({
 });
 
 function ccyFormat(num: number) {
-  return `${num.toFixed(2)}`;
+  return `${num?.toFixed(2)}`;
 }
 
 function priceRow(qty: number, unit: number) {
@@ -38,28 +38,13 @@ function createRow(desc: string, qty: number, unit: number) {
   return { desc, qty, unit, price };
 }
 
-interface Row {
-  desc: string;
-  qty: number;
-  unit: number;
-  price: number;
+
+function subtotal(items: InvoiceItem[]) {
+  return items?.map(({ amount }) => amount).reduce((accumulator, currentValue) => accumulator + currentValue);
 }
 
-function subtotal(items: Row[]) {
-  return items.map(({ price }) => price).reduce((sum, i) => sum + i, 0);
-}
 
-const rows = [
-  createRow('Paperclips (Box)', 100, 1.15),
-  createRow('Paper (Case)', 10, 45.99),
-  createRow('Waste Basket', 2, 17.99),
-];
-
-const invoiceSubtotal = subtotal(rows);
-const invoiceTaxes = TAX_RATE * invoiceSubtotal;
-const invoiceTotal = invoiceTaxes + invoiceSubtotal;
-
-export default function SpanningTable() {
+export default function SpanningTable({invoiceItems, amount}: {invoiceItems:InvoiceItem[], amount:number}) {
   const classes = useStyles();
 
   return (
@@ -68,35 +53,35 @@ export default function SpanningTable() {
 
         <TableHead>
           <TableRow>
-            <TableCell>DESCRIPTION</TableCell>
+            <TableCell>ITEM DESCRIPTION</TableCell>
             <TableCell align="right">RATE</TableCell>
             <TableCell align="right">QTY</TableCell>
-            <TableCell align="right">AMOUNT</TableCell>
+            <TableCell align="right">AMOUNT(₵)</TableCell>
           </TableRow>
         </TableHead>
         <TableBody>
-          {rows.map((row) => (
-            <TableRow key={row.desc}>
-              <TableCell>{row.desc}</TableCell>
-              <TableCell align="right">{row.qty}</TableCell>
-              <TableCell align="right">{row.unit}</TableCell>
-              <TableCell align="right">{ccyFormat(row.price)}</TableCell>
+          {invoiceItems?.map((row, index) => (
+            <TableRow key={index}>
+              <TableCell>{row.description}</TableCell>
+              <TableCell align="right">₵ {row.rate}</TableCell>
+              <TableCell align="right">{row.quantity}</TableCell>
+              <TableCell align="right">₵ {ccyFormat(row.amount)}</TableCell>
             </TableRow>
           ))}
           <TableRow>
             <TableCell rowSpan={3} />
             <TableCell colSpan={2} align="right" classes={{ root: classes.font }}>TOTAL</TableCell>
-            <TableCell align="right">{ccyFormat(invoiceSubtotal)}</TableCell>
+            <TableCell align="right">₵ {ccyFormat(subtotal(invoiceItems))}</TableCell>
           </TableRow>
           <TableRow>
             <TableCell></TableCell>
             <TableCell align="right" classes={{ root: classes.font }} style={{ borderBottomColor: '#42a5f5' }}>PAID</TableCell>
-            <TableCell align="right" style={{ borderBottomColor: '#42a5f5' }}>{ccyFormat(invoiceTaxes)}</TableCell>
+            <TableCell align="right" style={{ borderBottomColor: '#42a5f5' }}>₵ {ccyFormat(amount)}</TableCell>
           </TableRow>
           <TableRow>
-            <TableCell colSpan={2} align="right" classes={{ root: classes.balancefont }}>BALANCE DUE GHC</TableCell>
+            <TableCell colSpan={2} align="right" classes={{ root: classes.balancefont }}>BALANCE DUE GH</TableCell>
 
-            <TableCell align="right" classes={{ root: classes.balancefont }}>{ccyFormat(invoiceTotal)}</TableCell>
+            <TableCell align="right" classes={{ root: classes.balancefont }}>₵ {ccyFormat(subtotal(invoiceItems) -amount)}</TableCell>
           </TableRow>
         </TableBody>
 

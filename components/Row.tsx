@@ -74,7 +74,7 @@ function Row({ invoiceItem }: { invoiceItem: Invoice }) {
           {invoiceItem.name}
         </TableCell>
 
-        <TableCell align="left">{ccyFormat(invoiceItem.amount)}</TableCell>
+        <TableCell align="left">₵ {ccyFormat(invoiceItem.amount)}</TableCell>
         <TableCell align="left">{invoiceItem.phone}</TableCell>
         <TableCell align="left">{
           balance === 0 ?
@@ -132,9 +132,9 @@ function Row({ invoiceItem }: { invoiceItem: Invoice }) {
                 <TableHead>
                   <TableRow>
                     <TableCell>Description</TableCell>
-                    <TableCell>Rate (GH₵)</TableCell>
+                    <TableCell>Rate</TableCell>
                     <TableCell align="right">Quantity</TableCell>
-                    <TableCell align="right">Total price (₵)</TableCell>
+                    <TableCell align="right">Total price</TableCell>
                   </TableRow>
                 </TableHead>
                 <TableBody>
@@ -143,10 +143,10 @@ function Row({ invoiceItem }: { invoiceItem: Invoice }) {
                       <TableCell component="th" scope="row">
                         {itemRow.description}
                       </TableCell>
-                      <TableCell>{`${ccyFormat(itemRow.rate)}GH₵`}</TableCell>
+                      <TableCell>₵ {ccyFormat(itemRow.rate)}</TableCell>
                       <TableCell align="right">{itemRow.quantity}</TableCell>
                       <TableCell align="right">
-                        {ccyFormat(itemRow.amount)}
+                        ₵ {ccyFormat(itemRow.amount)}
                       </TableCell>
                     </TableRow>
                   ))}

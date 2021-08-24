@@ -15,7 +15,7 @@ import { supabase } from '../lib/supabaseClient';
 export default function CollapsibleTable() {
 
   const [page, setPage] = React.useState(0)
-  const [rowsPerPage, setRowsPerPage] = React.useState(5);
+  const [rowsPerPage, setRowsPerPage] = React.useState(10);
   const data = dataStore(state => state.data);
   const setData = dataStore(state => state.setData);
   const updateData = dataStore(state => state.updateData);
@@ -51,7 +51,7 @@ export default function CollapsibleTable() {
 
             <TableCell align="left">CUST. NAME</TableCell>
             
-            <TableCell align="left">AMOUNT (GH₵)</TableCell>
+            <TableCell align="left">AMOUNT</TableCell>
              <TableCell align="left">CUST.CONTACT</TableCell>
             <TableCell align="left">TRANSACTION STATUS</TableCell>
             <TableCell align="center">ACTIONS</TableCell>

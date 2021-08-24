@@ -6,6 +6,8 @@ import 'date-fns'
 import logo from '../public/MGlogo.jpg'
 import Image from 'next/image';
 import SpanningTable from './SpanningTable';
+import { dataStore } from '../lib/supabaseStore';
+import { Inv } from '../pages/Dashboard/[id]';
 
 const useStyles = makeStyles((theme) => ({
   divider: {
@@ -39,14 +41,28 @@ const styles = StyleSheet.create({
 
 });
 
-const Invoice = () => {
+const Invoice = ({invoiceData}:{invoiceData:Inv}) => {
   const classes = useStyles()
-  const today = new Date().getDate() + "-" + (new Date().getMonth() + 1) + "-" + new Date().getFullYear();
-  const [selectedDate, setSelectedDate] = React.useState<Date | null>(new Date('2014-08-18T21:1:54'));
-  const handleDateChange = (date: Date | null) => {
-    setSelectedDate(date)
+  
+  function ccyFormat(num: number) {
+  return `${num.toFixed(2)}`;
   }
-  //console.log(logo);
+  
+  function getBalance(invoice: Inv): number {
+    
+    const total = invoice.Item.map(({ amount }) => amount).reduce((accumulator, currentValue) => accumulator + currentValue);
+      const balance: number = Number(ccyFormat(total - invoice.amount))
+    return balance
+  }
+  
+  function getTodaysDate() {
+    let today = new Date();
+    const todaysDate = today.getFullYear() + '-' + (today.getMonth() + 1) + '-' + today.getDate();
+    return todaysDate
+  }
+    
+  
+
   return (
 
     <Container maxWidth={false}>
@@ -82,13 +98,13 @@ const Invoice = () => {
                 INVOICE
               </Typography>
               <Typography variant="body2" style={{ paddingBottom: 10, letterSpacing: '1px' }}>
-                INVOOO4
+                {invoiceData.invoice_id}
               </Typography>
               <Typography variant="body2" style={{ fontWeight: 'bold', letterSpacing: '1px' }}>
                 DATE
               </Typography>
               <Typography variant="body2">
-                02/03/2021
+                {invoiceData.date}
               </Typography>
               <Typography variant="body2" style={{ fontWeight: 'bold', letterSpacing: '1px' }} >
                 DUE
@@ -100,7 +116,7 @@ const Invoice = () => {
                 BALANCE DUE
               </Typography>
               <Typography variant="body2" style={{ paddingBottom: 30 }}>
-                GHC 0.00
+                GH₵ {getBalance(invoiceData)}
               </Typography>
             </Box>
           </Box>
@@ -109,23 +125,34 @@ const Invoice = () => {
         <Grid item xs={12} container direction="column">
           <Grid item xs={4} style={{ paddingTop: 20 }}>
             <Typography gutterBottom variant="body2" style={{ fontWeight: 'bold', letterSpacing: '1px', paddingBottom: 10 }} >BILL TO</Typography>
-            <Typography variant="body2" style={{ fontWeight: 'bold', letterSpacing: '1px' }} gutterBottom> NII ANANG</Typography>
+            <Typography variant="body2" style={{ fontWeight: 'bold', letterSpacing: '1px' }} gutterBottom>{invoiceData.name }</Typography>
             <Typography variant="body2" gutterBottom style={{ letterSpacing: '1px' }}>
-              Amanfro
+              {invoiceData.address}
             </Typography>
             <Typography variant="body2" gutterBottom style={{ letterSpacing: '1px' }}>
               Accra
             </Typography>
             <Typography variant="body2" gutterBottom style={{ letterSpacing: '1px' }}>
-              0543307585
+              {invoiceData.phone}
             </Typography>
           </Grid>
           <Divider variant="fullWidth" light style={{ height: 1, background: ' darkgray' }} />
         </Grid>
         <Grid item xs={12} style={{ paddingTop: 20 }}>
-          <SpanningTable />
+          <SpanningTable invoiceItems={invoiceData.Item} amount={ invoiceData.amount}/>
         </Grid>
-        <Grid item style={{ height: 100 }}></Grid>
+        <Grid item style={{ marginTop: 100 , marginLeft:'auto'}}>
+          <Typography variant="body2" style={{ fontWeight: 'bold', letterSpacing: '1px' }} >
+            DATE SIGNED
+            
+          </Typography>
+           <Typography variant="body2" style={{ letterSpacing: '1px' }} >
+            {
+                 getTodaysDate()
+            }
+            
+          </Typography>
+        </Grid>
       </Grid>
     </Container>
   )
