@@ -38,7 +38,7 @@ const Generator = () => {
   };
 
 
-
+  //console.log(formData);
   useEffect(() => {
     setContainer(Array.from({ length: itemCount }, () => ({} as obj)))
   }, [itemCount]);
@@ -47,14 +47,17 @@ const Generator = () => {
 
     const { data: Invoice, error } = await supabase
       .from('Invoice')
-      .insert([formData]).single();
+      .insert([{...formData}]).single();
+    if(error)  console.log(error);
     //Then add the items to the created invoice
     if (Invoice) {
+      
       Items.forEach(async (item) => {
         const Itemamount = item.rate * item.quantity
         const { data: Item, error } = await supabase
           .from('Item')
           .insert([{ ...item, invoiceId: Invoice.id, amount: Itemamount }])
+         if(error) console.log(error);
       })
 
     }
@@ -151,9 +154,8 @@ const Generator = () => {
                 fullWidth
                 label="Phone"
                 name="telephone"
-                onChange={(event) => { setFormData({ ...formData, phone: Number(event.target.value) }) }}
+                onChange={(event) => { setFormData({ ...formData, phone: event.target.value }) }}
                 required
-                type="number"
                 variant="outlined"
               />
             </Grid>

@@ -24,7 +24,7 @@ export default function CollapsibleTable() {
     setPage(newPage);
   };
 
-  const fetchInvoices = async () => {
+ const fetchInvoices = async () => {
     const { data: Invoice } = await supabase
       .from('Invoice')
       .select(`

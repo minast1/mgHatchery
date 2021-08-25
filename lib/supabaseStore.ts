@@ -17,7 +17,7 @@ export type Invoice = {
     amount: number
     date: string
     name: string
-    phone: number
+    phone: string | number
     Item: InvoiceItem[]
 }
 
