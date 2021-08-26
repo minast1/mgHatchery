@@ -7,7 +7,7 @@ import CssBaseline from '@material-ui/core/CssBaseline'
 import theme from '../lib/theme';
 import { AuthSession } from '@supabase/supabase-js'
 import { supabase } from '../lib/supabaseClient';
-import { Container } from '@material-ui/core'
+import { Box, Container } from '@material-ui/core'
 import { Provider , createStore} from '../lib/store'
 import {useStore} from '../lib/sessionStore'
 import router from 'next/router'
@@ -52,8 +52,11 @@ function MyApp({ Component, pageProps }: AppProps) {
 
     if (pageProps.protected && !Usession) {
       return (
-        <Container maxWidth="xs" style={{marginTop : 170}}>
+        <Container maxWidth="xs" style={{ marginTop: 170 }}>
+          <Box display="flex" justifyContent="center" alignItems="center" mt={10}>
               <h1>Loading!....</h1>
+          </Box>
+             
         </Container>
       )
       

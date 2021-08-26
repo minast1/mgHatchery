@@ -1,7 +1,6 @@
 import React from 'react'
 import { makeStyles } from '@material-ui/core/styles';
 import { Box, Container, Divider, Grid, InputBase, TextField, Typography } from '@material-ui/core';
-import { Document, Page, Text, View, StyleSheet } from '@react-pdf/renderer';
 import 'date-fns'
 import logo from '../public/MGlogo.jpg'
 import Image from 'next/image';
@@ -16,30 +15,7 @@ const useStyles = makeStyles((theme) => ({
   }
 }));
 
-const styles = StyleSheet.create({
-  page: {
-    display: 'flex',
-    flexDirection: 'column',
-    //backgroundColor: '#E4E4E4',
-    padding: 30
-  },
-  section: {
-    margin: 10,
-    padding: 10,
-    flexGrow: 1,
 
-  },
-  secondColumn: {
-    flexDirection: 'column',
-    paddingLeft: 50,
-    flexGrow: 1
-  },
-  topRow: {
-    flexDirection: 'row',
-    alignItems: 'center',
-  },
-
-});
 
 const Invoice = ({invoiceData}:{invoiceData:Inv}) => {
   const classes = useStyles()
