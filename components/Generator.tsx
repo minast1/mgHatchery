@@ -201,7 +201,7 @@ const Generator = () => {
           {
             itemContainer && itemContainer.map((el, index) => (
 
-              (<IContainer key={index} productItem={el} toggleSnack={handleClick} />)
+              ( <IContainer key={index} productItem={el} toggleSnack={handleClick} />)
             ))
           }
         </CardContent>
