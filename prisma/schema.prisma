@@ -12,11 +12,11 @@ model Invoice {
   date       String
   name       String
   address    String
-  phone      Int
+  phone      String   @db.VarChar
   createdAt  DateTime @default(now())
   invoice_id String
   amount     Decimal
-  items      Item[]
+  Item       Item[]
 }
 
 model Item {
@@ -26,5 +26,5 @@ model Item {
   quantity    Int
   amount      Decimal
   invoiceId   Int
-  invoice     Invoice @relation(fields: [invoiceId], references: [id])
+  Invoice     Invoice @relation(fields: [invoiceId], references: [id])
 }
