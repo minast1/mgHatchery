@@ -53,7 +53,7 @@ export const getStaticPaths:GetStaticPaths = async () => {
   params: {id : item.id.toString()}
 })) as Paths
 
-  return {paths, fallback:false }
+  return {paths, fallback:'blocking' }
 }
 
 
@@ -71,7 +71,8 @@ export const getStaticProps: GetStaticProps = async ({params}) => {
     props: {
       protected: true,
       data: Invoice
-    }
+    },
+    revalidate: 2
   }
 }
   
