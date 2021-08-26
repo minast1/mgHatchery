@@ -117,6 +117,7 @@ export default function Layout() {
           <IconButton
             edge="start"
             color="inherit"
+            disabled
             aria-label="open drawer"
             onClick={handleDrawerOpen}
             className={clsx(classes.menuButton, open && classes.menuButtonHidden)}
