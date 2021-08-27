@@ -79,7 +79,7 @@ const Generator = () => {
   }
 
 
-  console.log(invoiceId);
+  
   return (
     <form
       autoComplete="off"
