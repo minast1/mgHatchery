@@ -1,29 +1,42 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect} from 'react';
 import { invoiceState, obj, useInvoiceStore } from '../lib/invoiceStore';
 import { Box, Button, Card, CardContent, CardHeader, Divider, Grid, TextField } from '@material-ui/core';
 import IContainer from './IContainer';
 import Snackbar from '@material-ui/core/Snackbar';
 import MuiAlert, { AlertProps } from '@material-ui/lab/Alert';
-import { InvoiceItem, Invoice } from '../lib/supabaseStore';
+import { InvoiceItem, Invoice, dataStore } from '../lib/supabaseStore';
 import { supabase } from '../lib/supabaseClient';
 
 
 
 function Alert(props: AlertProps) {
   return <MuiAlert elevation={6} variant="filled" {...props} />;
-}
+}  
 
 const Generator = () => {
-
+  const data = dataStore(state => state.data);
+  
   const [itemCount, setItemCount] = useState<number>(0);
+  const [invoiceId, setInvoiceId]  = useState<string>('')
   const [itemContainer, setContainer] = useState<obj[]>([]);
   const [itemAdded, setItemAdded] = useState<boolean>(false);
   const [formData, setFormData] = useState<Invoice | {}>({} as Invoice);
   const Items = useInvoiceStore(state => state.items);
   const resetItems = useInvoiceStore(state => state.resetItems);
+  let today = new Date().toLocaleDateString()
 
-
-
+  
+  const generateInvoiceId = () => {
+    let arrOfIds: number[] = data.map(({ id }) => id);
+    const maxId = Math.max(...arrOfIds) + 1 ;
+    const nextId = `INV000${maxId}`
+        setInvoiceId(nextId)
+   }
+  
+   useEffect(() => {
+      generateInvoiceId()
+   }, [data]);
+  
 
   const [open, setOpen] = useState<boolean>(false);
 
@@ -47,7 +60,7 @@ const Generator = () => {
 
     const { data: Invoice, error } = await supabase
       .from('Invoice')
-      .insert([{...formData}]).single();
+      .insert([{...formData,invoice_id:invoiceId}]).single();
     if(error)  console.log(error);
     //Then add the items to the created invoice
     if (Invoice) {
@@ -64,6 +77,9 @@ const Generator = () => {
     setFormData({})
     resetItems()
   }
+
+
+  console.log(invoiceId);
   return (
     <form
       autoComplete="off"
@@ -90,9 +106,9 @@ const Generator = () => {
                 helperText="Please specify a new invoice id"
                 label="Invoice Id"
                 name="id"
-                onChange={(event) => { setFormData({ ...formData, invoice_id: event.target.value }) }}
+               // onChange={(event) => { setFormData({ ...formData, invoice_id: event.target.value }) }}
                 required
-
+                value={invoiceId}
                 variant="outlined"
               />
             </Grid>
@@ -107,7 +123,7 @@ const Generator = () => {
                 label="Date"
                 type="date"
                 onChange={(event) => { setFormData({ ...formData, date: event.target.value }) }}
-                defaultValue="2021-05-24"
+                defaultValue={`${today}`}//"2021-05-24"
                 variant="outlined"
                 InputLabelProps={{
                   shrink: true,
