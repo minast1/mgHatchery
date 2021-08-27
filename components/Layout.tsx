@@ -125,7 +125,7 @@ export default function Layout() {
             <MenuIcon />
           </IconButton>
           <Typography component="h1" variant="h6" color="inherit" noWrap className={classes.title}>
-            MG-Hatchery
+            MG-HATCHERY
           </Typography>
                    LOGOUT
                   <IconButton color="inherit" onClick={async(e) => {
