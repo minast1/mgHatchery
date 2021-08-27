@@ -240,7 +240,7 @@ const Generator = () => {
               event.preventDefault();
               createInvoiceWithItems()
             }}
-            disabled={Object.entries(formData).length !== 6 ? true : false}
+            disabled={Object.entries(formData).length !== 5 ? true : false}
             variant="contained"
           >
             Save details
