@@ -93,7 +93,8 @@ export const getStaticProps: GetStaticProps = async (
     props: {
       protected: true,
       data: Invoice
-    }
+    },
+    revalidate: 5
   }
 }
 
