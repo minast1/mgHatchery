@@ -2,7 +2,7 @@ import React from 'react'
 import { makeStyles } from '@material-ui/core/styles';
 import { Box, Container, Divider, Grid, InputBase, TextField, Typography } from '@material-ui/core';
 import 'date-fns'
-import logo from '../public/MGlogo.jpg'
+import logo from '../public/mgLogo2.jpg';
 import Image from 'next/image';
 import SpanningTable from './SpanningTable';
 import { dataStore } from '../lib/supabaseStore';
@@ -12,6 +12,9 @@ const useStyles = makeStyles((theme) => ({
   divider: {
     background: 'black',
     height: 1
+  },
+  img: {
+    border: 0
   }
 }));
 
@@ -46,7 +49,7 @@ const Invoice = ({invoiceData}:{invoiceData:Inv}) => {
         <Grid item xs={12}>
           <Box display="flex" alignItems="flex-start" mt={5}>
             <Box pr={4}>
-              <Image src={logo} alt="logo" width={200} height={190} layout="intrinsic" />
+              <Image src={logo} alt="logo" width={200} height={200} className={classes.img} layout="intrinsic" />
             </Box>
             <Box flexDirection="column" flexGrow={1} >
               <Typography variant="subtitle1" gutterBottom style={{ fontWeight: 'bold', paddingBottom: 15 }}>
