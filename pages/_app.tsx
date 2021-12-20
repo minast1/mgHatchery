@@ -1,84 +1,38 @@
-import Head from 'next/head'
-import type { AppProps } from 'next/app'
+import { Provider } from 'next-auth/client'
+import Head from 'next/head';
+import type { AppProps } from "next/app"
 import React from 'react'
-import PropTypes from 'prop-types'
-import { ThemeProvider } from '@material-ui/styles'
-import CssBaseline from '@material-ui/core/CssBaseline'
+import { ThemeProvider } from '@material-ui/core/styles';
+import CssBaseline from '@material-ui/core/CssBaseline';
 import theme from '../lib/theme';
-import { AuthSession } from '@supabase/supabase-js'
-import { supabase } from '../lib/supabaseClient';
-import { Box, Container } from '@material-ui/core'
-import { Provider , createStore} from '../lib/store'
-import {useStore} from '../lib/sessionStore'
-import router from 'next/router'
 
 
 
-function MyApp({ Component, pageProps }: AppProps) {
-// const [session, setSession] = React.useState<AuthSession | null>(null)
-  const Usession = useStore(state => state.Usession)
-  const setSession = useStore(state => state.setSession)
-  
+const App = ({ Component, pageProps : {session, ...pageProps} }: AppProps) => {
+ 
   React.useEffect(() => {
-    const userSession = supabase.auth.session();
-      
-    if (!userSession) {
-            router.push('/')
-    } else {
-     // router.push('/Dashboard')
-      setSession(userSession)
-     }
-    
-    supabase.auth.onAuthStateChange((_event: string, session: AuthSession | null) => {
-       if (!session) {
-            router.push('/')
-       } else {
-           router.push('/Dashboard')
-           setSession(session)
-       }
-      
-    })
-
-  }, [])
-
-  React.useEffect(() => {
-       // Remove the server-side injected CSS.
+    // Remove the server-side injected CSS.
     const jssStyles = document.querySelector('#jss-server-side');
     if (jssStyles) {
-      jssStyles.parentElement!.removeChild(jssStyles);
+      jssStyles.parentElement?.removeChild(jssStyles);
     }
-    }, [])
-  
+  }, []);
 
-    if (pageProps.protected && !Usession) {
-      return (
-        <Container maxWidth="xs" style={{ marginTop: 170 }}>
-          <Box display="flex" justifyContent="center" alignItems="center" mt={10}>
-              <h1>Loading!....</h1>
-          </Box>
-             
-        </Container>
-      )
-      
-    }
-  
   return (
-     <Provider createStore={createStore}>
-   <React.Fragment>
- <Head>
-    <title>MGHatchery</title>
-    <meta name="viewport" content="initial-scale=1.0, width=device-width" />
-  </Head>
-   <ThemeProvider theme={theme}>
+    <React.Fragment>
+      <Head>
+        <title>MgHatchery</title>
+        <meta name="viewport" content="minimum-scale=1, initial-scale=1, width=device-width" />
+      </Head>
+      <ThemeProvider theme={theme}>
+        {/* CssBaseline kickstart an elegant, consistent, and simple baseline to build upon. */}
         <CssBaseline />
-        <Component {...pageProps} />
-         </ThemeProvider>
-        </React.Fragment>
-        </Provider>  
+    <Provider session={session}>
+      <Component {...pageProps} />
+    </Provider>
+    </ThemeProvider>
+    </React.Fragment>
   )
 }
 
-
-
-
-export default MyApp
+export default App

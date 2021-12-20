@@ -13,11 +13,19 @@ import Typography from '@material-ui/core/Typography';
 import { makeStyles } from '@material-ui/core/styles';
 import Container from '@material-ui/core/Container';
 import { FormHelperText, Paper } from '@material-ui/core';
-import { useStore } from '../lib/store';
+import { Controller, FormProvider,SubmitHandler,useForm } from "react-hook-form";
 import CircularProgress from '@material-ui/core/CircularProgress';
-import { supabase } from '../lib/supabaseClient';
+import { authStore } from '../lib/authStore';
+import { IFormInput, loginSchema } from '../lib/constants';
+import { signIn } from 'next-auth/client';
+import { yupResolver } from '@hookform/resolvers/yup';
+import { useRouter } from 'next/router'
+import Alert from '@material-ui/lab/Alert'
 
 
+type MessageType = {
+  message: string | React.ReactElement
+}
 
 function Copyright() {
   return (
@@ -54,12 +62,35 @@ const useStyles = makeStyles((theme) => ({
   submit: {
     margin: theme.spacing(3, 0, 2),
   },
+  error : {
+    color : 'red',
+    fontSize : '11px'
+  },
 }));
 
 export default function SignIn() {
   const classes = useStyles();
-  const { setAuthView, error, loading, handleSignIn , setEmail, setPassword,email,password} = useStore();
-  
+
+  const {error} = useRouter().query;
+  const { control, handleSubmit, reset, register, formState: { errors } } = useForm<IFormInput>({
+    resolver: yupResolver(loginSchema)
+  });
+
+  const setAuthView = authStore(state => state.setAuthView)
+  const loading = authStore(state => state.loading)
+
+  const onSubmit: SubmitHandler<IFormInput> = (data) => {
+     
+    data.callbackUrl =  `${process.env.NEXT_PUBLIC_URL}/Dashboard/`
+      
+    authStore.setState({ loading: true });
+     signIn('credentials' , data  );
+     reset();
+     authStore.setState({loading: false });
+
+    // console.log(data)
+
+  }
  
   return (
     <Container component="main" maxWidth="xs">
@@ -71,37 +102,64 @@ export default function SignIn() {
         <Typography component="h1" variant="h5">
           Sign in
         </Typography>
-        <form className={classes.form} onSubmit={(e) => handleSignIn(e)}>
-          <TextField
-            variant="outlined"
-            margin="normal"
-            required
-            error={error.includes("credentials") || error.includes("email") ? true : false}
-            helperText={error.includes("credentials")|| error.includes("email")  ? "Invalid Login Credentials" : ''}
-            defaultValue={email}
-             onChange={(e) => setEmail(e.target.value)}
-            fullWidth
-            id="email"
-            label="Email Address"
+        <form
+          className={classes.form}
+          onSubmit={handleSubmit(onSubmit)}
+          method='post'
+          action='/api/auth/callback/credentials'
+          noValidate
+           autoComplete="off">
+          
+          <Controller
             name="email"
-            autoComplete="email"
+            control={control}
+            render={({ field: {value} }) =>
+              
+              <TextField
+            variant="outlined"
+                margin="normal"
+                {...register("email")}
+                //value={value}
+            required
+            error={!!errors.email}
+            // onChange={onChange}
+                fullWidth
+                helperText={errors.email?.message}
+                defaultValue={value}
+                id="email"
+                label="Email Address"
+            //autoComplete="email"
             autoFocus
           />
-          <TextField
-            variant="outlined"
-            margin="normal"
-            required
-            error={error.includes("credentials") || error.includes("password")? true : false}
-           
-             defaultValue={password}
-            onChange={(e) => setPassword(e.target.value)}
-            fullWidth
+          }
+          />
+          
+          
+          <Controller
             name="password"
-            label="Password"
+            control={control}
+            render={({ field: {value } }) => 
+             
+              <TextField
+            variant="outlined"
+                margin="normal"
+                {...register("password")}
+            required
+            error={!!errors.password}
+              //  value={value}
+                defaultValue={value}
+           // onChange={onChange}
+            fullWidth
+                label="Password"
+                helperText={errors.password?.message}
             type="password"
             id="password"
             autoComplete="current-password"
           />
+          }
+          />
+          
+            {error && <Alert severity="error">{error}</Alert>}
           <FormControlLabel
             control={<Checkbox value="remember" color="primary" />}
             label="Remember me"

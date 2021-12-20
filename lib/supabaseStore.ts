@@ -1,3 +1,4 @@
+import { Item } from '@prisma/client';
 import React from 'react';
 import create from 'zustand'
 
@@ -10,7 +11,7 @@ export type InvoiceItem = {
     rate: number
 }
 
-export type Invoice = {
+export type CustomInvoice = {
     id: number
     address: string
     invoice_id: string
@@ -18,17 +19,17 @@ export type Invoice = {
     date: string
     name: string
     phone: string | number
-    Item: InvoiceItem[]
+    Item: Item[]
 }
 
 
 
 export interface supabaseStoreState {
-    data: Invoice[] 
-    setData: (item: Invoice[]) => void
-    updateData: (items: Invoice[]) => void
-    IPData: Invoice[] // INvoice page data
-    setIPData: (item:Invoice[]) => void
+    data: CustomInvoice[] 
+    setData: (item: CustomInvoice[]) => void
+    updateData: (items: CustomInvoice[]) => void
+    IPData: CustomInvoice[] // INvoice page data
+    setIPData: (item:CustomInvoice[]) => void
 }
 
 

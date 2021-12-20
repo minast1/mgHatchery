@@ -13,8 +13,8 @@ import MenuIcon from '@material-ui/icons/Menu';
 import ChevronLeftIcon from '@material-ui/icons/ChevronLeft';
 import { mainListItems, secondaryListItems } from '../lib/listItems';
 import ExitToAppIcon from '@material-ui/icons/ExitToApp';
-import { supabase } from '../lib/supabaseClient';
 import { useRouter } from 'next/router'
+import { signOut } from 'next-auth/client';
 
 const drawerWidth = 240;
 
@@ -130,15 +130,8 @@ export default function Layout() {
                    LOGOUT
                   <IconButton color="inherit" onClick={async(e) => {
                       e.preventDefault();
-                      try {
-                          const { error: Error } = await supabase.auth.signOut()
-                          if (Error) throw Error
-                      } catch (error) {
-                          console.log(error);
-                      }
-                  
-                      
-          }}>
+                     signOut({callbackUrl: "/"})
+                  }}>
             <ExitToAppIcon/>
           </IconButton>
         </Toolbar>

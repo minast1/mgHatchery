@@ -3,27 +3,19 @@ import {useStore } from '../lib/store';
 import SignIn from './SignIn';
 import SignUp from './SignUp';
 import PasswordReset from './PasswordReset';
-import { Container } from '@material-ui/core';
+import { authStore } from '../lib/authStore';
+
   
 const Auth = () => {
 
-  const { authView } = useStore();
+  const { authView } = authStore();
   return (
   <>
        {
-          authView === 'sign_in' ? (
-   <SignIn/>
-         ) : authView === 'sign_up' ? (
-             <SignUp/>
-           ) : authView === 'forgotten_password' ? (
-               <PasswordReset/>
-    ) : null
+          authView === 'sign_in' ? (<SignIn/>) : (<SignUp/>) 
       }
       </>
      )
-  
-    
-
      
 }
 

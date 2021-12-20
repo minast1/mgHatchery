@@ -3,8 +3,10 @@ import Avatar from '@material-ui/core/Avatar';
 import Button from '@material-ui/core/Button';
 import CssBaseline from '@material-ui/core/CssBaseline';
 import TextField from '@material-ui/core/TextField';
-import FormControlLabel from '@material-ui/core/FormControlLabel';
-import Checkbox from '@material-ui/core/Checkbox';
+import { authStore } from '../lib/authStore';
+import { IFormInput, registerSchema } from '../lib/constants';
+import { signIn } from 'next-auth/client';
+import { Controller, FormProvider,SubmitHandler,useForm } from "react-hook-form";
 import Link from '@material-ui/core/Link';
 import Grid from '@material-ui/core/Grid';
 import Box from '@material-ui/core/Box';
@@ -13,8 +15,17 @@ import Typography from '@material-ui/core/Typography';
 import { makeStyles } from '@material-ui/core/styles';
 import Container from '@material-ui/core/Container';
 import { Paper } from '@material-ui/core';
-import { useStore } from '../lib/store';
 import CircularProgress from '@material-ui/core/CircularProgress';
+import {ResponseData} from '../pages/api/auth/signUp'
+import { yupResolver } from '@hookform/resolvers/yup';
+
+
+export type RegisterFormInput = {
+  email: string 
+  password: string 
+  passwordConfirm: string
+  callbackUrl? : string
+}
 
 function Copyright() {
   return (
@@ -51,12 +62,48 @@ const useStyles = makeStyles((theme) => ({
   submit: {
     margin: theme.spacing(3, 0, 2),
   },
+    error : {
+    color : 'red',
+    fontSize : '11px'
+  }
 }));
 
 export default function SignUp() {
   const classes = useStyles();
-const { setAuthView, error, loading, handleSignUp , setEmail, setPassword,email,password} = useStore();
- 
+  const { register, control, handleSubmit, formState: { errors }, reset, getValues } = useForm<RegisterFormInput>({
+  resolver: yupResolver(registerSchema)
+}) ;
+  const setAuthView = authStore(state => state.setAuthView);
+  const loading = authStore(state => state.loading);
+  const error = authStore(state => state.error);
+  
+  const onSubmit: SubmitHandler<IFormInput> = async (data, e) => {
+    //console.log(data);
+    authStore.setState({ loading: true });
+    const response = await fetch(`/api/auth/signUp`, {
+      method: 'POST',
+      body: JSON.stringify({ ...data }),
+      headers: {
+        'Content-Type': 'application/json',
+      }
+    });
+     const newUser: ResponseData = await response.json();
+    if (!response.ok) {
+      authStore.setState({ error: newUser.message })
+      return; 
+    }
+
+    // If the response has a status of 200, sign the new user in 
+     
+    signIn('credentials', {
+      email: data.email,
+      password: data.password,
+      callbackUrl: `${process.env.NEXT_PUBLIC_URL}/Dashboard/`
+    });
+    reset();
+     authStore.setState({loading: false });
+  }
+   
   return (
     <Container component="main" maxWidth="xs">
       <CssBaseline />
@@ -67,38 +114,84 @@ const { setAuthView, error, loading, handleSignUp , setEmail, setPassword,email,
         <Typography component="h1" variant="h5">
           Sign Up
         </Typography>
-        <form className={classes.form} onSubmit={(e) => handleSignUp(e)}>
-          <TextField
+        <form
+          className={classes.form}
+          onSubmit={handleSubmit(onSubmit)}
+          method="post"
+           noValidate
+           autoComplete="off"
+        >
+          
+          <Controller
+            name="email"
+            control={control}
+            render={({ field: {  value } }) =>
+              
+             <TextField
             variant="outlined"
-            margin="normal"
+                margin="normal"
+              {...register("email")}
             required
-            error={error.includes("email") ? true : false}
-            helperText={error.includes("email")?"Email Address is Invalid" : ''}
+                error={!!errors.email}
+                helperText={errors.email?.message}
             fullWidth
-            defaultValue={email}
-            onChange={(e) => setEmail(e.target.value)}
+             defaultValue={value}
+            //onChange={onChange}
             id="email"
             label="Email Address"
-            name="email"
-            autoComplete="email"
+           // autoComplete="email"
             autoFocus
           />
-          <TextField
-            variant="outlined"
-            margin="normal"
-            error={error.includes("password") ? true : false}
-            helperText={error.includes("password")?"Password is invalid" : ''}
-            required
-            defaultValue={password}
-            onChange={(e) => setPassword(e.target.value)}
-            fullWidth
+          }
+          />
+         
+          <Controller
             name="password"
+            control={control}
+            render={({ field: { value } }) =>
+              
+              <TextField
+            variant="outlined"
+                margin="normal"
+                  {...register("password")}
+                error={!!errors.password}
+                helperText={errors.password?.message}
+            defaultValue={value}
+            required
+           // onChange={onChange}
+            fullWidth
             label="Password"
             type="password"
             id="password"
-            autoComplete="current-password"
+           // autoComplete="current-password"
           />
           
+          }
+          />
+          
+            <Controller
+            name="passwordConfirm"
+            control={control}
+            render={({ field: {value } }) =>
+              
+              <TextField
+            variant="outlined"
+                margin="normal"
+                {...register("passwordConfirm")}
+                error={!!errors.passwordConfirm}
+                helperText={errors.passwordConfirm?.message}
+            defaultValue={value}
+            required
+           // onChange={onChange}
+            fullWidth
+            label="Password Confirmation"
+            type="password"
+            id="password"
+           // autoComplete="current-password"
+          />
+          
+          }
+          />
           <Button
             type="submit"
             fullWidth

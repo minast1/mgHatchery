@@ -9,7 +9,6 @@ import Paper from '@material-ui/core/Paper';
 import { TableBody, TableFooter, TablePagination } from '@material-ui/core';
 import { dataStore } from '../lib/supabaseStore';
 import Row from './Row';
-import { supabase } from '../lib/supabaseClient';
 
 
 export default function CollapsibleTable() {
@@ -24,21 +23,12 @@ export default function CollapsibleTable() {
     setPage(newPage);
   };
 
- const fetchInvoices = async () => {
-    const { data: Invoice } = await supabase
-      .from('Invoice')
-      .select(`
-         id, date, invoice_id, name, address, phone, amount,
-         Item (
-         description, quantity, rate, amount)`).order('id', { ascending: false });
-
-    if (Invoice) updateData(Invoice)
-  }
+ 
 
   React.useEffect(() => {
 
-    const mySubscription = supabase.from('Item').on('*', () => fetchInvoices()).subscribe()
-    return () => { supabase.removeSubscription(mySubscription) }
+    //const mySubscription = supabase.from('Item').on('*', () => fetchInvoices()).subscribe()
+   // return () => { supabase.removeSubscription(mySubscription) }
   }, []);
   //console.log(data);
   

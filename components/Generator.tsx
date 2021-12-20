@@ -4,8 +4,8 @@ import { Box, Button, Card, CardContent, CardHeader, Divider, Grid, TextField } 
 import IContainer from './IContainer';
 import Snackbar from '@material-ui/core/Snackbar';
 import MuiAlert, { AlertProps } from '@material-ui/lab/Alert';
-import { InvoiceItem, Invoice, dataStore } from '../lib/supabaseStore';
-import { supabase } from '../lib/supabaseClient';
+import { InvoiceItem, CustomInvoice, dataStore } from '../lib/supabaseStore';
+
 
 
 
@@ -20,7 +20,7 @@ const Generator = () => {
   const [invoiceId, setInvoiceId]  = useState<string>('')
   const [itemContainer, setContainer] = useState<obj[]>([]);
   const [itemAdded, setItemAdded] = useState<boolean>(false);
-  const [formData, setFormData] = useState<Invoice | {}>({} as Invoice);
+  const [formData, setFormData] = useState<CustomInvoice | {}>({} as CustomInvoice);
   const Items = useInvoiceStore(state => state.items);
   const resetItems = useInvoiceStore(state => state.resetItems);
   let today = new Date().toLocaleDateString()
@@ -55,29 +55,6 @@ const Generator = () => {
   useEffect(() => {
     setContainer(Array.from({ length: itemCount }, () => ({} as obj)))
   }, [itemCount]);
-
-  const createInvoiceWithItems = async () => {
-
-    const { data: Invoice, error } = await supabase
-      .from('Invoice')
-      .insert([{...formData,invoice_id:invoiceId}]).single();
-    if(error)  console.log(error);
-    //Then add the items to the created invoice
-    if (Invoice) {
-      
-      Items.forEach(async (item) => {
-        const Itemamount = item.rate * item.quantity
-        const { data: Item, error } = await supabase
-          .from('Item')
-          .insert([{ ...item, invoiceId: Invoice.id, amount: Itemamount }])
-         if(error) console.log(error);
-      })
-
-    }
-    setFormData({})
-    resetItems()
-  }
-
 
   
   return (
@@ -238,7 +215,7 @@ const Generator = () => {
             color="primary"
             onClick={(event) => {
               event.preventDefault();
-              createInvoiceWithItems()
+              //createInvoiceWithItems()
             }}
             disabled={Object.entries(formData).length !== 5 ? true : false}
             variant="contained"

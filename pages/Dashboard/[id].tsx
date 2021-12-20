@@ -5,7 +5,7 @@ import { useStore } from '../../lib/sessionStore';
 import { useRouter } from 'next/router'
 import Invoice from '../../components/Invoice';
 import { dataStore, InvoiceItem} from '../../lib/supabaseStore';
-import { supabase } from '../../lib/supabaseClient';
+//import { supabase } from '../../lib/supabaseClient';
 
 
 
@@ -33,7 +33,7 @@ export default function Dashboard({data}:{data:Inv[]}) {
 
   return (
     <div className={classes.root}>
-      <Invoice invoiceData={ data[0]}/>
+      {/*<Invoice invoiceData={data && data[0]} /> */}
     </div>
   ) 
 }
@@ -45,32 +45,37 @@ type Paths = {
 }[]
 export const getStaticPaths:GetStaticPaths = async () => {
      
-      let { data: Invoice} = await supabase
+    /*  let { data: Invoice} = await supabase
   .from('Invoice')
   .select('*')
 
-  const paths = Invoice?.map((item) => ({
+ */
+  const paths  = [
+    { params: { id: '1' } },
+    { params: { id: '2' } }
+  ]
+    /*Invoice?.map((item) => ({
   params: {id : item.id.toString()}
 })) as Paths
-
+*/
   return {paths, fallback:'blocking' }
-}
+} 
 
 
 export const getStaticProps: GetStaticProps = async ({params}) => {
    
     //console.log(context.params?.id);
-  const { data:Invoice } = await supabase
+  /*const { data:Invoice } = await supabase
       .from('Invoice')
       .select(`
    id, date, invoice_id, name, address, phone, amount,
    Item (
       description, quantity, rate, amount)`).eq('id', params?.id);
-      //set it to state
+      //set it to state */
   return {
     props: {
-      protected: true,
-      data: Invoice
+     // protected: true,
+      data: null
     },
     //revalidate: 5
   }

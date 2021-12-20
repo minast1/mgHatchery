@@ -3,12 +3,12 @@ import React from 'react'
 import KeyboardArrowDownIcon from '@material-ui/icons/KeyboardArrowDown';
 import KeyboardArrowUpIcon from '@material-ui/icons/KeyboardArrowUp';
 import DoneIcon from '@material-ui/icons/Done';
-import { dataStore, Invoice, InvoiceItem } from '../lib/supabaseStore';
+import { dataStore, CustomInvoice, InvoiceItem } from '../lib/supabaseStore';
 import { makeStyles } from '@material-ui/core/styles';
 import ErrorOutlineOutlinedIcon from '@material-ui/icons/ErrorOutlineOutlined';
 import DeleteIcon from '@material-ui/icons/Delete';
 import PrintIcon from '@material-ui/icons/Print';
-import { supabase } from '../lib/supabaseClient';
+
 
 const useRowStyles = makeStyles({
   root: {
@@ -24,7 +24,7 @@ const useRowStyles = makeStyles({
 
 
 
-function Row({ invoiceItem }: { invoiceItem: Invoice }) {
+function Row({ invoiceItem }: { invoiceItem: CustomInvoice }) {
   const [open, setOpen] = React.useState(false);
   const classes = useRowStyles();
   const [balance, setBalance] = React.useState(0);
@@ -32,7 +32,7 @@ function Row({ invoiceItem }: { invoiceItem: Invoice }) {
   const updateData = dataStore(state => state.updateData);
 
 
-  function getBalance(invoice: Invoice): number {
+  function getBalance(invoice: CustomInvoice): number {
     let arrayOfAmounts: number[] = [0];
     //const { Item , amount } = invoice;
     invoice.Item.forEach(({ amount }) => {
@@ -56,10 +56,7 @@ function Row({ invoiceItem }: { invoiceItem: Invoice }) {
   }, []);
 
   const deleteInvoiceWithItems = async (invoiceId: number) => {
-    //Delete items with the given Id. 
-    await supabase.from('Invoice').delete().match({ id: invoiceId })
-    //Delete Invoice with the given Id : This step is taken care of by cascade feature
-    //Update items in the table
+           //delete invoice
   }
   ///console.log(amts);
   return (

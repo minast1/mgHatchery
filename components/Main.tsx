@@ -6,8 +6,8 @@ import SearchIcon from '@material-ui/icons/Search';
 import Generator from './Generator';
 import { useState } from 'react';
 import SearchBar from 'material-ui-search-bar';
-import { dataStore, Invoice } from '../lib/supabaseStore';
-import { supabase } from '../lib/supabaseClient';
+import { dataStore } from '../lib/supabaseStore';
+//import { supabase } from '../lib/supabaseClient';
 
 
 const useStyles = makeStyles((theme) => ({
@@ -51,14 +51,14 @@ const Main = () => {
 
   const queryInvoiceData = async (queryText:string) => {
         
-    let { data: Invoice } = await supabase
+   /* let { data: Invoice } = await supabase
       .from('Invoice')
       .select(`
          id, date, invoice_id, name, address, phone, amount,
          Item (
          description, quantity, rate, amount)`)
-      .textSearch('name', `${queryText}`);
-    if (Invoice) updateData(Invoice);
+      .textSearch('name', `${queryText}`); */
+    //if (Invoice) updateData(Invoice);
 
     //update the table data with results
   }

@@ -1,6 +1,5 @@
 import { FormEvent } from 'react'
 import create from 'zustand'
-import { supabase } from './supabaseClient';
 import createContext from 'zustand/context'
 import { AuthSession } from '@supabase/supabase-js'
 import { MaterialUiPickersDate } from '@material-ui/pickers/typings/date';
