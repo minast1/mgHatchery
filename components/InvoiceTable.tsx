@@ -7,17 +7,17 @@ import TableHead from '@material-ui/core/TableHead';
 import TableRow from '@material-ui/core/TableRow';
 import Paper from '@material-ui/core/Paper';
 import { TableBody, TableFooter, TablePagination } from '@material-ui/core';
-import { dataStore } from '../lib/supabaseStore';
+import { dataStore, useStore } from '../lib/supabaseStore';
 import Row from './Row';
 
 
 
 export default function CollapsibleTable() {
-
+    const state = useStore()
   const [page, setPage] = React.useState(0)
   const [rowsPerPage, setRowsPerPage] = React.useState(10);
-  const data = dataStore(state => state.data).reverse();
-  const updateData = dataStore(state => state.updateData);
+  const data = state.data.reverse();
+  const updateData =  state.updateData  //dataStore(state => state.updateData);
 
   const handleChangePage = (event: unknown, newPage: number) => {
     setPage(newPage);

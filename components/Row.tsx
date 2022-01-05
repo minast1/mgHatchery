@@ -3,7 +3,7 @@ import React from 'react'
 import KeyboardArrowDownIcon from '@material-ui/icons/KeyboardArrowDown';
 import KeyboardArrowUpIcon from '@material-ui/icons/KeyboardArrowUp';
 import DoneIcon from '@material-ui/icons/Done';
-import { dataStore, CustomInvoice} from '../lib/supabaseStore';
+import { dataStore, CustomInvoice, useStore} from '../lib/supabaseStore';
 import { makeStyles } from '@material-ui/core/styles';
 import ErrorOutlineOutlinedIcon from '@material-ui/icons/ErrorOutlineOutlined';
 import DeleteIcon from '@material-ui/icons/Delete';
@@ -37,10 +37,11 @@ function Row({ invoiceItem }: { invoiceItem: CustomInvoice }) {
   const { control, handleSubmit, reset, register, formState: { errors } } = useForm<{ amount: number, id:number }>();
   const [open, setOpen] = React.useState(false);
   const classes = useRowStyles();
+  const state = useStore();
   const [loading, setLoading] = React.useState<boolean>(false);
   const [amts, setArray] = React.useState<number[] | Decimal[]>([]);
   const [payment, triggerPayment] = React.useState<boolean>(false);
-  const updateData = dataStore(state => state.updateData);
+  const updateData =  state.updateData // dataStore(state => state.updateData);
 
   type ItemAmountType = {
     amount: number | Decimal 
@@ -84,7 +85,7 @@ function Row({ invoiceItem }: { invoiceItem: CustomInvoice }) {
     const newData = { amount: Number(amount) };
   
     const updatedStatus = await patchData(`/api/invoices/${id}`, newData);
-    dataStore.getState().updateInvoiceStatus(updatedStatus);
+    state.updateInvoiceStatus(updatedStatus);
     reset({ amount: 0 });
     setLoading(false);
     //postData('/api/invoices', body); */
@@ -95,10 +96,10 @@ function Row({ invoiceItem }: { invoiceItem: CustomInvoice }) {
   React.useEffect(() => {
     const bal = getBalance(invoiceItem)
     setBalance(bal)
-  }, [dataStore.getState().data]);
+  }, [state.data]);
 
   const deleteInvoiceWithItems = (invoiceId: number) => {
-    dataStore.getState().deleteData(invoiceId);
+    state.deleteData(invoiceId);
            fetch(`/api/invoices/${invoiceId}`, {
              method:'DELETE'
            })
@@ -152,7 +153,7 @@ function Row({ invoiceItem }: { invoiceItem: CustomInvoice }) {
         }</TableCell>
         <TableCell align="left">{
           <Grid container>
-            <Grid item xs={4} sm={12} md={4}>
+            <Grid item xs={5} sm={12} md={5}>
               <IconButton
                 href={`/Dashboard/${encodeURIComponent(invoiceItem.id)}`}
                 aria-label="print"
@@ -176,17 +177,7 @@ function Row({ invoiceItem }: { invoiceItem: CustomInvoice }) {
               </IconButton>
 
             </Grid>
-            <Grid item xs={4} sm={12} md={4}>
-              <IconButton
-                aria-label="edit"
-                size="small"
-                href="#"
-               // style={{ color: 'red' }}
-              >
-                <EditIcon/>
-              </IconButton>
-
-            </Grid>
+           
           </Grid>
         }</TableCell>
       </TableRow>

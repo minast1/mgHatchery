@@ -1,11 +1,13 @@
 import React from 'react';
 import { makeStyles } from '@material-ui/core/styles';
-import { GetStaticProps, GetStaticPropsContext, GetStaticPaths } from 'next'
 //import { useStore } from '../../lib/sessionStore';
 import { useRouter } from 'next/router'
 import Invoice from '../../components/Invoice';
-import { dataStore} from '../../lib/supabaseStore';
-//import { supabase } from '../../lib/supabaseClient';
+import { CustomInvoice, dataStore, useStore} from '../../lib/supabaseStore';
+import { useSession } from "next-auth/client"
+import Loading from '../../components/Loading';
+import Unauthorized from '../../components/Unauthorized';
+
 
 
 
@@ -17,67 +19,52 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-export type Inv = {
-   id: number
-    address: string
-    invoice_id: string
-    amount: number
-    date: string
-    name: string
-    phone: number
-    Item: InvoiceItem[]  
-}
-export default function Dashboard({data}:{data:Inv[]}) {
-  const classes = useStyles();
-  
 
-  return (
+export default function Dashboard() {
+  const classes = useStyles();
+  const [session, loading] = useSession();
+  const router = useRouter()
+   const state = useStore();
+  const [currentInvoice, setCurrentInvoice] = React.useState<CustomInvoice | {}>({});
+
+
+  
+  const fetchInvoice = async (url:string) => {
+    const res = await fetch(url);
+    const response = await res.json();
+    return response;
+   }
+
+  console.log(currentInvoice);
+React.useEffect(() => {
+    //fetch the invoice data from the api 
+  if (!router.isReady) return;
+  const { id } = router.query;
+  (async () => {
+   const invoice = await fetchInvoice(`/api/invoices/${id}`);
+    setCurrentInvoice(invoice);
+  })()
+  
+     
+  // const selectedInvoice = dataStore.getState().data.find(item => item.id === id as unknown as number);
+   // selectedInvoice && setCurrentInvoice(selectedInvoice)
+  
+   // data && dataStore.setState({data : data.reverse()});
+  }, [router.isReady]);
+  //console.log(data);
+  if (loading) return (
+    <Loading/> 
+  )
+
+  if (!loading && !session) return <Unauthorized />
+  
+  if(!loading && session) return (
+
     <div className={classes.root}>
       {/*<Invoice invoiceData={data && data[0]} /> */}
     </div>
   ) 
 }
 
-type Paths = {
-  params: {
-    id:string
-  }
-}[]
-export const getStaticPaths:GetStaticPaths = async () => {
-     
-    /*  let { data: Invoice} = await supabase
-  .from('Invoice')
-  .select('*')
 
- */
-  const paths  = [
-    { params: { id: '1' } },
-    { params: { id: '2' } }
-  ]
-    /*Invoice?.map((item) => ({
-  params: {id : item.id.toString()}
-})) as Paths
-*/
-  return {paths, fallback:'blocking' }
-} 
-
-
-export const getStaticProps: GetStaticProps = async ({params}) => {
-   
-    //console.log(context.params?.id);
-  /*const { data:Invoice } = await supabase
-      .from('Invoice')
-      .select(`
-   id, date, invoice_id, name, address, phone, amount,
-   Item (
-      description, quantity, rate, amount)`).eq('id', params?.id);
-      //set it to state */
-  return {
-    props: {
-     // protected: true,
-      data: null
-    },
-    //revalidate: 5
-  }
-}
   

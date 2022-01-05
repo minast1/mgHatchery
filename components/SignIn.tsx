@@ -21,6 +21,7 @@ import { signIn } from 'next-auth/client';
 import { yupResolver } from '@hookform/resolvers/yup';
 import { useRouter } from 'next/router'
 import Alert from '@material-ui/lab/Alert'
+import  Image  from 'next/image';
 
 
 type MessageType = {
@@ -42,7 +43,7 @@ function Copyright() {
 
 const useStyles = makeStyles((theme) => ({
   paper: {
-        marginTop: theme.spacing(8),
+        marginTop: theme.spacing(5),
         padding: theme.spacing(3),
         
          //border : '1px solid darkgray', 
@@ -52,8 +53,9 @@ const useStyles = makeStyles((theme) => ({
         //backgroundColor : theme.palette.grey[100]
   },
   avatar: {
-    margin: theme.spacing(1),
-    backgroundColor: theme.palette.secondary.main,
+    borderRadius : 80,
+    objectFit : 'cover'
+    //backgroundColor: theme.palette.secondary.main,
   },
   form: {
     width: '100%', // Fix IE 11 issue.
@@ -80,7 +82,7 @@ export default function SignIn() {
   const loading = authStore(state => state.loading)
 
   const onSubmit: SubmitHandler<IFormInput> = (data) => {
-     
+       authStore.setState({ loading: true });
     data.callbackUrl =  `${process.env.NEXT_PUBLIC_URL}/Dashboard/`
       
     authStore.setState({ loading: true });
@@ -96,9 +98,8 @@ export default function SignIn() {
     <Container component="main" maxWidth="xs">
       <CssBaseline />
       <Paper className={classes.paper} elevation={5}>
-        <Avatar className={classes.avatar}>
-          <LockOutlinedIcon />
-        </Avatar>
+       <Image width={120} height={60} className={classes.avatar} src="/mgLogo2.jpg" alt="mghatchery"/>
+        
         <Typography component="h1" variant="h5">
           Sign in
         </Typography>

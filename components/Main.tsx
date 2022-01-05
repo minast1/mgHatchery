@@ -7,7 +7,7 @@ import Generator from './Generator';
 import Paper from '@material-ui/core/Paper'
 import { useState, useEffect } from 'react';
 import SearchBar from 'material-ui-search-bar';
-import { dataStore } from '../lib/supabaseStore';
+import { dataStore, useStore } from '../lib/supabaseStore';
 //import { supabase } from '../lib/supabaseClient';
 
 
@@ -63,13 +63,14 @@ const useStyles = makeStyles((theme) => ({
 
 const Main = () => {
   const classes = useStyles();
+  const state = useStore();
   const [invoice, addInvoice] = useState<boolean>(false);
   const [searchData, changeData] = useState<string>('');
   const [partial, setPartial] = useState<number>(0);
   const [unpaid, setUnpaid] = useState<number>(0);
   const [hasBalance, setHasBalance] = useState<number>(0);
-  const originalData = dataStore(state => state.data);
-  const updateData = dataStore(state => state.updateData);
+  const originalData = state.data   //dataStore(state => state.data);
+  const updateData = state.updateData //dataStore(state => state.updateData);
   //const copyOfOriginalData:Invoice[] = Array.from([...originalData])
   
   const getPartiallyPaidInvoices = () => {
@@ -123,7 +124,7 @@ const Main = () => {
           <Grid item xs={3}>
             <Paper elevation={3} className={classes.paper} style={{backgroundColor: '#1976d2', color: 'white'}}>
               <div>
-                <p className={ classes.p}>{dataStore.getState().data.length} </p>
+                <p className={ classes.p}>{state.data.length} </p>
                  <h2 style={{color: 'white'}}>Total Invoices</h2>
               </div>
              </Paper>

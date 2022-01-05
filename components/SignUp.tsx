@@ -18,7 +18,7 @@ import { Paper } from '@material-ui/core';
 import CircularProgress from '@material-ui/core/CircularProgress';
 import {ResponseData} from '../pages/api/auth/signUp'
 import { yupResolver } from '@hookform/resolvers/yup';
-
+import Image from 'next/image'
 
 export type RegisterFormInput = {
   email: string 
@@ -52,8 +52,8 @@ const useStyles = makeStyles((theme) => ({
        // backgroundColor : theme.palette.grey[100]
   },
   avatar: {
-    margin: theme.spacing(1),
-    backgroundColor: theme.palette.secondary.main,
+    objectFit: 'cover',
+    borderRadius : 80
   },
   form: {
     width: '100%', // Fix IE 11 issue.
@@ -108,9 +108,9 @@ export default function SignUp() {
     <Container component="main" maxWidth="xs">
       <CssBaseline />
       <Paper className={classes.paper} elevation={5}>
-        <Avatar className={classes.avatar}>
-          <LockOutlinedIcon />
-        </Avatar>
+
+       <Image width={120} height={60} className={classes.avatar} src="/mgLogo2.jpg" alt="mghatchery"/>
+
         <Typography component="h1" variant="h5">
           Sign Up
         </Typography>

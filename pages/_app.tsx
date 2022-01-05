@@ -5,6 +5,7 @@ import React from 'react'
 import { ThemeProvider } from '@material-ui/core/styles';
 import CssBaseline from '@material-ui/core/CssBaseline';
 import theme from '../lib/theme';
+import { dataStore, ZustandProvider } from '../lib/supabaseStore';
 
 
 
@@ -27,8 +28,10 @@ const App = ({ Component, pageProps : {session, ...pageProps} }: AppProps) => {
       <ThemeProvider theme={theme}>
         {/* CssBaseline kickstart an elegant, consistent, and simple baseline to build upon. */}
         <CssBaseline />
-    <Provider session={session}>
-      <Component {...pageProps} />
+        <Provider session={session}>
+          <ZustandProvider createStore={dataStore}>
+            <Component {...pageProps} />
+          </ZustandProvider>
     </Provider>
     </ThemeProvider>
     </React.Fragment>

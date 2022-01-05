@@ -1,5 +1,5 @@
 import { Invoice, Status} from '@prisma/client';
-import { createHandler, Get, Post, Put, Delete, HttpCode, Query, Body, Param, ParseNumberPipe } from '@storyofams/next-api-decorators';
+import { createHandler, Get, Post, Put, Delete, HttpCode, Query, Body, Param, ParseNumberPipe, NotFoundException } from '@storyofams/next-api-decorators';
 import { CustomInvoice } from '../../../lib/supabaseStore';
 import prisma from '../../../lib/prisma';
 import { Decimal } from '@prisma/client/runtime';
@@ -19,7 +19,17 @@ class InvoiceRouter {
         if(balance > 0 ) status = 'BALANCE'
         return status
     }
+     
+     //GET /api/invoices/:id
+    @Get('/:id')
+    public async getInvoicById(@Param('id', ParseNumberPipe) id: number): Promise<Invoice> {
 
+        const invoice = await prisma.invoice.findFirst({ where: { id: id }, include: { Item: true } });
+        if (!invoice) {
+            throw new NotFoundException
+        } 
+        return invoice  
+    } 
    
     //POST /api/invoices
     @Post()

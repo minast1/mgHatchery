@@ -1,9 +1,11 @@
 import { Item, Status } from '@prisma/client';
 import React from 'react';
 import create from 'zustand'
+import createContext from 'zustand/context'
+import { persist } from "zustand/middleware"
 
 
-
+export let { Provider: ZustandProvider, useStore } = createContext<supabaseStoreState>()
 
 
 export type CustomInvoice = {
@@ -23,7 +25,7 @@ export type CustomInvoice = {
 export interface supabaseStoreState {
 
     data: CustomInvoice[] 
-   // setData: (item: CustomInvoice[]) => void
+    setData: (item: CustomInvoice[]) => void
     updateData: (invoice: CustomInvoice) => void
     deleteData: (id: number) => void 
     updateInvoiceStatus: (to:CustomInvoice) => void 
@@ -33,8 +35,10 @@ export interface supabaseStoreState {
 
 
 
-export const dataStore = create<supabaseStoreState>((set, get) => ({
-    data: [],
+export const dataStore = () =>
+create<supabaseStoreState>((set, get) => ({
+        data: [],
+        setData: (item) => set(state => ({data: item})),
     updateData: (invoice) => set(state => ({ data: [...state.data, invoice] })),
     deleteData: (id) => {
         const currentData = get().data;
@@ -53,4 +57,4 @@ export const dataStore = create<supabaseStoreState>((set, get) => ({
     setIPData: (item) => set(state => ({IPData: [...item]}) )
 
     //find a way to override the dataa in  the store
-}))
+    }))

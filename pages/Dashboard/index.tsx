@@ -9,12 +9,10 @@ import Layout from '../../components/Layout';
 import router  from 'next/router'
 import Copyright from '../../components/Copyright';
 import Main from '../../components/Main';
-import { useSession, getSession } from "next-auth/client"
-import { CustomInvoice, dataStore } from '../../lib/supabaseStore';
+import { useSession } from "next-auth/client"
+import { CustomInvoice, dataStore, useStore } from '../../lib/supabaseStore';
 import Loading from '../../components/Loading';
 import Unauthorized from '../../components/Unauthorized';
-import { Button } from '@material-ui/core';
-import { signOut } from "next-auth/client"
 import prisma from '../../lib/prisma';
 
 const useStyles = makeStyles((theme) => ({
@@ -57,13 +55,13 @@ const useStyles = makeStyles((theme) => ({
 export default function Dashboard({ data }: { data: CustomInvoice[] }/*Invoice[] | [] }*/) {
   const classes = useStyles();
  // const setData = dataStore(state => state.setData);
-
+  const state = useStore()
   const [session, loading] = useSession();
      
   // fetch and revalidate data with swr save
  React.useEffect(() => {
 
-    data && dataStore.setState({data : data.reverse()});
+    data && state.setData(data.reverse())  //  dataStore.setState({data : data.reverse()});
   }, []);
   //console.log(data);
   if (loading) return (
