@@ -6,7 +6,7 @@ import TableCell from '@material-ui/core/TableCell';
 import TableContainer from '@material-ui/core/TableContainer';
 import TableHead from '@material-ui/core/TableHead';
 import TableRow from '@material-ui/core/TableRow';
-import { InvoiceItem } from '../lib/supabaseStore';
+import { Item } from '@prisma/client';
 
 
 const TAX_RATE = 0.07;
@@ -39,12 +39,12 @@ function createRow(desc: string, qty: number, unit: number) {
 }
 
 
-function subtotal(items: InvoiceItem[]) {
-  return items?.map(({ amount }) => amount).reduce((accumulator, currentValue) => accumulator + currentValue);
+function subtotal(items: Item[]) {
+  return items?.map(({ amount }) => Number(amount)).reduce((accumulator, currentValue) => accumulator + currentValue);
 }
+  
 
-
-export default function SpanningTable({invoiceItems, amount}: {invoiceItems:InvoiceItem[], amount:number}) {
+export default function SpanningTable({invoiceItems, amount}: {invoiceItems:Item[], amount:number}) {
   const classes = useStyles();
 
   return (
@@ -65,23 +65,23 @@ export default function SpanningTable({invoiceItems, amount}: {invoiceItems:Invo
               <TableCell>{row.description}</TableCell>
               <TableCell align="right">₵ {row.rate}</TableCell>
               <TableCell align="right">{row.quantity}</TableCell>
-              <TableCell align="right">₵ {ccyFormat(row.amount)}</TableCell>
+              <TableCell align="right">₵ {row.amount}</TableCell>
             </TableRow>
           ))}
           <TableRow>
             <TableCell rowSpan={3} />
             <TableCell colSpan={2} align="right" classes={{ root: classes.font }}>TOTAL</TableCell>
-            <TableCell align="right">₵ {ccyFormat(subtotal(invoiceItems))}</TableCell>
+            <TableCell align="right">₵ {subtotal(invoiceItems)}</TableCell>
           </TableRow>
           <TableRow>
             <TableCell></TableCell>
             <TableCell align="right" classes={{ root: classes.font }} style={{ borderBottomColor: '#42a5f5' }}>PAID</TableCell>
-            <TableCell align="right" style={{ borderBottomColor: '#42a5f5' }}>₵ {ccyFormat(amount)}</TableCell>
+            <TableCell align="right" style={{ borderBottomColor: '#42a5f5' }}>₵ {amount}</TableCell>
           </TableRow>
           <TableRow>
             <TableCell colSpan={2} align="right" classes={{ root: classes.balancefont }}>BALANCE DUE GH</TableCell>
 
-            <TableCell align="right" classes={{ root: classes.balancefont }}>₵ {ccyFormat(subtotal(invoiceItems) -amount)}</TableCell>
+            <TableCell align="right" classes={{ root: classes.balancefont }}>₵ {subtotal(invoiceItems) -amount}</TableCell>
           </TableRow>
         </TableBody>
 

@@ -4,7 +4,7 @@ import { Box, Button, Card, CardContent, CardHeader, Divider, Grid, TextField } 
 import IContainer from './IContainer';
 import Snackbar from '@material-ui/core/Snackbar';
 import MuiAlert, { AlertProps } from '@material-ui/lab/Alert';
-import {  CustomInvoice, dataStore } from '../lib/supabaseStore';
+import {  CustomInvoice, dataStore, useStore } from '../lib/supabaseStore';
 import { useForm, Controller,SubmitHandler } from "react-hook-form";
 import { yupResolver } from '@hookform/resolvers/yup';
 import { InvoiceSchema } from '../lib/constants';
@@ -34,27 +34,37 @@ const Generator = () => {
   const { control, handleSubmit,reset, register, formState: { errors } } = useForm<IFormInput>({
     resolver: yupResolver(InvoiceSchema) 
   });
-
-  const data = dataStore(state => state.data);
-  
+  const state = useStore();
+  const data = state.data //dataStore(state => state.data);
+   const mounted = React.useRef(false);
   const [itemCount, setItemCount] = useState<number>(0);
   const [loading, setLoading] = useState<boolean>(false);
   const [itemContainer, setContainer] = useState<Item[]>([]);
   const Items = useInvoiceStore(state => state.items);
+  const [invId, setInvId]  = useState<string>("")
   const resetItems = useInvoiceStore(state => state.resetItems);
   let today = new Date().toLocaleDateString();
 
 
-  const generateInvoiceId = React.useCallback(
-    (): string => {
-    let arrOfIds: number[] = data.map(({ id }) => id);
+console.log(invId);
+
+   React.useEffect(() => {
+        mounted.current = true; // Will set it to true on mount ...
+        return () => { mounted.current = false; }; // ... and to false on unmount
+  }, []);
+
+   React.useEffect(() => {
+      if (mounted.current) {
+         let arrOfIds: number[] = data.map(({ id }) => id);
     const maxId: number = Math.max(...arrOfIds) + 1;
   
     const nextId = maxId === -Infinity ? 'INV000' : `INV000${maxId}`
-     return nextId
+         setInvId(nextId)
+      }
+        return () => {setInvId("")}
   }, [data])
   
-  const postData = async (url: string, data: Partial<CustomInvoice>) => {
+  const postData = async (url: string, data: Partial<CustomInvoice>):Promise<CustomInvoice> => {
        const response = await fetch(url, {
       method: 'POST',
       headers: {
@@ -63,19 +73,20 @@ const Generator = () => {
       body: JSON.stringify(data)
        });
     const res = await response.json();
-       dataStore.getState().updateData(res);
+    return res;
+  }
+
+  const onSubmit: SubmitHandler<IFormInput> = async (data, e) => {
+   // console.log(data);
+    data.invoice_id = invId; 
+    setLoading(true);
+    const body = { ...data, Item: Items }
+    const response =  await postData('/api/invoices', body);
+      state.updateData(response)  //dataStore.getState().updateData(res);
     setLoading(false);
     reset({ name: '', phone: '', address: '', amount: 0 });
     setItemCount(0);
       useInvoiceStore.getState().resetItems();
-  }
-
-  const onSubmit: SubmitHandler<IFormInput> = async (data) => {
-   // console.log(data);
-    setLoading(true);
-    const body = { ...data, Item: Items }
-    postData('/api/invoices', body);
-   
     
 
   }
@@ -96,7 +107,8 @@ const Generator = () => {
 
   
   useEffect(() => {
-    setContainer(Array.from({ length: itemCount }, () => ({} as Item)))
+    setContainer(Array.from({ length: itemCount }, () => ({} as Item)));
+    return () => {setContainer([])}
   }, [itemCount]);
 
   
@@ -125,7 +137,7 @@ const Generator = () => {
             >
               <Controller
                 name="invoice_id"
-               defaultValue={generateInvoiceId()}
+               defaultValue={invId}
                 control={control}
               render={({field : {value, onChange}}) => 
                 <TextField
@@ -135,10 +147,11 @@ const Generator = () => {
                    InputLabelProps={{
                       shrink: true,
                    }}
-                fullWidth
+                  fullWidth
+                  defaultValue={invId}
                   helperText="Invoice id will be generated automatically"
                 label="Invoice Id"
-                  placeholder={generateInvoiceId()}
+                  placeholder={invId}
                 variant="outlined"
               />
             }

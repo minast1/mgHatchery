@@ -2,12 +2,14 @@ import React from 'react';
 import { makeStyles } from '@material-ui/core/styles';
 //import { useStore } from '../../lib/sessionStore';
 import { useRouter } from 'next/router'
-import Invoice from '../../components/Invoice';
+//import Invoice from '../../components/Invoice';
 import { CustomInvoice, dataStore, useStore} from '../../lib/supabaseStore';
 import { useSession } from "next-auth/client"
 import Loading from '../../components/Loading';
 import Unauthorized from '../../components/Unauthorized';
-
+import { GetStaticProps, GetStaticPaths } from 'next'
+import { Invoice } from '@prisma/client';
+import InvoicePage from '../../components/InvoicePage';
 
 
 
@@ -20,37 +22,28 @@ const useStyles = makeStyles((theme) => ({
 }));
 
 
-export default function Dashboard() {
+export default function Dashboard({invoice}: {invoice: CustomInvoice}) {
   const classes = useStyles();
   const [session, loading] = useSession();
-  const router = useRouter()
+
    const state = useStore();
-  const [currentInvoice, setCurrentInvoice] = React.useState<CustomInvoice | {}>({});
 
-
-  
-  const fetchInvoice = async (url:string) => {
-    const res = await fetch(url);
-    const response = await res.json();
-    return response;
-   }
-
-  console.log(currentInvoice);
-React.useEffect(() => {
+  //console.log(invoice);
+//React.useEffect(() => {
     //fetch the invoice data from the api 
-  if (!router.isReady) return;
-  const { id } = router.query;
-  (async () => {
-   const invoice = await fetchInvoice(`/api/invoices/${id}`);
-    setCurrentInvoice(invoice);
-  })()
+ // if (!router.isReady) return;
+ // const { id } = router.query;
+  //(async () => {
+  // const invoice = await fetchInvoice(`/api/invoices/${id}`);
+   // setCurrentInvoice(invoice);
+  //})()
   
      
   // const selectedInvoice = dataStore.getState().data.find(item => item.id === id as unknown as number);
    // selectedInvoice && setCurrentInvoice(selectedInvoice)
   
    // data && dataStore.setState({data : data.reverse()});
-  }, [router.isReady]);
+  //}, [router.isReady]);
   //console.log(data);
   if (loading) return (
     <Loading/> 
@@ -61,9 +54,29 @@ React.useEffect(() => {
   if(!loading && session) return (
 
     <div className={classes.root}>
-      {/*<Invoice invoiceData={data && data[0]} /> */}
+      <InvoicePage invoiceData={invoice} />
     </div>
   ) 
+}
+
+export const getStaticPaths: GetStaticPaths = async () => {
+  const res = await fetch(`${process.env.NEXTAUTH_URL}/api/invoices`);
+  const invoices = await res.json();
+
+  const paths = invoices.map((invoice: Partial<Invoice>) => ({
+    params : {id : invoice.id?.toString()}
+  }))
+
+  return {paths, fallback: false}
+}
+
+
+export const getStaticProps: GetStaticProps = async ({params}) => {
+  const res = await fetch(`${process.env.NEXTAUTH_URL}/api/invoices/${params?.id as string}`)
+  const invoice = await res.json();
+  return {
+    props : {invoice}
+  }
 }
 
 

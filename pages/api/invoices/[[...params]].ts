@@ -30,6 +30,15 @@ class InvoiceRouter {
         } 
         return invoice  
     } 
+
+    //GET  /api/invoices 
+    @Get()
+    async getAllInvoices() {
+        const invoices = prisma.invoice.findMany({
+            include : {Item: true}
+        })
+        return invoices;
+    }
    
     //POST /api/invoices
     @Post()

@@ -81,11 +81,11 @@ export default function SignIn() {
   const setAuthView = authStore(state => state.setAuthView)
   const loading = authStore(state => state.loading)
 
-  const onSubmit: SubmitHandler<IFormInput> = (data) => {
+  const onSubmit: SubmitHandler<IFormInput> = async (data, e) => {
+    e?.preventDefault();
        authStore.setState({ loading: true });
     data.callbackUrl =  `${process.env.NEXT_PUBLIC_URL}/Dashboard/`
       
-    authStore.setState({ loading: true });
      signIn('credentials' , data  );
      reset();
      authStore.setState({loading: false });
@@ -107,7 +107,7 @@ export default function SignIn() {
           className={classes.form}
           onSubmit={handleSubmit(onSubmit)}
           method='post'
-          action='/api/auth/callback/credentials'
+          //action='/api/auth/callback/credentials'
           noValidate
            autoComplete="off">
           

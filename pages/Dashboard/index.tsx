@@ -62,7 +62,7 @@ export default function Dashboard({ data }: { data: CustomInvoice[] }/*Invoice[]
  React.useEffect(() => {
 
     data && state.setData(data.reverse())  //  dataStore.setState({data : data.reverse()});
-  }, []);
+  }, [data]);
   //console.log(data);
   if (loading) return (
     <Loading/>
@@ -88,14 +88,11 @@ export default function Dashboard({ data }: { data: CustomInvoice[] }/*Invoice[]
     
 }
 
-export const getStaticProps: GetStaticProps = async (
-  context: GetStaticPropsContext
-) => {
-  const invoices = await prisma.invoice.findMany({
-    include: {
-      Item: true
-    }
-     })
+export const getStaticProps: GetStaticProps = async () => {
+  
+  const res = await fetch(`${process.env.NEXTAUTH_URL}/api/invoices`);
+  const invoices = await res.json();
+
  /* let { data: Invoice, error } = await supabase
     .from('Invoice')
     .select(`
@@ -106,7 +103,7 @@ export const getStaticProps: GetStaticProps = async (
    */
   return {
     props: {
-      data: JSON.parse(JSON.stringify(invoices))
+      data: invoices //JSON.parse(JSON.stringify(invoices))
     },
    // revalidate: 5
   }

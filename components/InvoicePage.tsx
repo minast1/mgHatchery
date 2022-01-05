@@ -1,12 +1,14 @@
 import React from 'react'
 import { makeStyles } from '@material-ui/core/styles';
-import { Box, Container, Divider, Grid, InputBase, TextField, Typography } from '@material-ui/core';
+import { Box, Container, Divider, Grid, Typography } from '@material-ui/core';
 import 'date-fns'
 import logo from '../public/mgLogo2.jpg';
 import Image from 'next/image';
 import SpanningTable from './SpanningTable';
-import { dataStore } from '../lib/supabaseStore';
-import { Inv } from '../pages/Dashboard/[id]';
+import { CustomInvoice, dataStore } from '../lib/supabaseStore';
+import { Decimal } from '@prisma/client/runtime';
+
+
 
 const useStyles = makeStyles((theme) => ({
   divider: {
@@ -19,20 +21,30 @@ const useStyles = makeStyles((theme) => ({
 }));
 
 
+ type ItemAmountType = {
+    amount: number | Decimal 
+  }
 
-const Invoice = ({invoiceData}:{invoiceData:Inv}) => {
+
+const InvoicePage = ({invoiceData}:{invoiceData:CustomInvoice}) => {
   const classes = useStyles()
   
   function ccyFormat(num: number) {
   return `${num.toFixed(2)}`;
   }
   
-  function getBalance(invoice: Inv): number {
+ function getBalance(invoice: CustomInvoice): number  {
+   // let arrayOfAmounts: number[] | Decimal[]  = [0];
+    //const { Item , amount } = invoice;
+   const reducer = (accumulator: number, currentValue: number) => Number(accumulator) + Number(currentValue);
+    const total:number | Decimal = invoice.Item.map(({ amount }) => Number(amount)).reduce(reducer)
+   // setArray(arrayOfAmounts)
     
-    const total = invoice.Item.map(({ amount }) => amount).reduce((accumulator, currentValue) => accumulator + currentValue);
-      const balance: number = Number(ccyFormat(total - invoice.amount))
+    //const total = arrayOfAmounts.reduce(reducer)
+    const balance: number = total - invoice.amount
     return balance
   }
+
   
   function getTodaysDate() {
     let today = new Date();
@@ -137,4 +149,4 @@ const Invoice = ({invoiceData}:{invoiceData:Inv}) => {
   )
 }
 
-export default Invoice
+export default InvoicePage
