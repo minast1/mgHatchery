@@ -1,11 +1,10 @@
 import { Item, Status } from '@prisma/client';
-import React from 'react';
 import create from 'zustand'
 import createContext from 'zustand/context'
-import { persist } from "zustand/middleware"
 
 
-export let { Provider: ZustandProvider, useStore } = createContext<supabaseStoreState>()
+
+export let { Provider: ZustandProvider, useStore } = createContext<supabaseStoreState>();
 
 
 export type CustomInvoice = {
@@ -19,7 +18,6 @@ export type CustomInvoice = {
     phone: string | number
     Item: Item[]
 }
-
 
 
 export interface supabaseStoreState {

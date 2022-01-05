@@ -1,10 +1,13 @@
-import { Invoice, Status} from '@prisma/client';
+import { Invoice, Status, Item} from '@prisma/client';
 import { createHandler, Get, Post, Put, Delete, HttpCode, Query, Body, Param, ParseNumberPipe, NotFoundException } from '@storyofams/next-api-decorators';
 import { CustomInvoice } from '../../../lib/supabaseStore';
 import prisma from '../../../lib/prisma';
 import { Decimal } from '@prisma/client/runtime';
 
 
+
+//type CustomInvoice = Invoice & Item[]
+ 
 class InvoiceRouter {
    
 
