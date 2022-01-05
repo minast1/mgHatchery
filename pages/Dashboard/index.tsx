@@ -2,18 +2,14 @@ import React from 'react';
 import { makeStyles } from '@material-ui/core/styles';
 import Box from '@material-ui/core/Box';
 import Container from '@material-ui/core/Container';
-import Typography from '@material-ui/core/Typography';
-
-import { GetStaticProps, GetStaticPropsContext } from 'next'
+import { GetStaticProps} from 'next'
 import Layout from '../../components/Layout';
-import router  from 'next/router'
 import Copyright from '../../components/Copyright';
 import Main from '../../components/Main';
 import { useSession } from "next-auth/client"
-import { CustomInvoice, dataStore, useStore } from '../../lib/supabaseStore';
+import { CustomInvoice,useStore } from '../../lib/supabaseStore';
 import Loading from '../../components/Loading';
 import Unauthorized from '../../components/Unauthorized';
-import prisma from '../../lib/prisma';
 
 const useStyles = makeStyles((theme) => ({
   root: {
