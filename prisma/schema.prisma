@@ -19,18 +19,26 @@ model Invoice {
   phone      String   @db.Text
   createdAt  DateTime @default(now())
   invoice_id String
-  amount     Decimal
+  amount     Decimal? @db.Decimal(10, 2)
+  status     Status   @default(UNPAID)
   Item       Item[]
 }
 
+enum Status {
+  FULL_PAYMENT
+  UNPAID
+  PARTIAL_PAYMENT
+  BALANCE
+}
+
 model Item {
-  id          Int     @id @default(autoincrement())
+  id          Int      @id @default(autoincrement())
   description String
-  rate        Decimal
+  rate        Decimal  @db.Decimal(10, 2)
   quantity    Int
-  amount      Decimal
+  amount      Decimal  @db.Decimal(10, 2)
   invoiceId   Int
-  Invoice     Invoice @relation(fields: [invoiceId], references: [id])
+  Invoice     Invoice? @relation(fields: [invoiceId], references: [id], onDelete: Cascade)
 }
 
 model Session {

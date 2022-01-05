@@ -56,14 +56,14 @@ const useStyles = makeStyles((theme) => ({
 
 export default function Dashboard({ data }: { data: CustomInvoice[] }/*Invoice[] | [] }*/) {
   const classes = useStyles();
-  const setData = dataStore(state => state.setData);
+ // const setData = dataStore(state => state.setData);
 
   const [session, loading] = useSession();
      
   // fetch and revalidate data with swr save
  React.useEffect(() => {
 
-    data && setData(data);
+    data && dataStore.setState({data : data.reverse()});
   }, []);
   //console.log(data);
   if (loading) return (
@@ -105,19 +105,12 @@ export const getStaticProps: GetStaticProps = async (
    Item (
       description, quantity, rate, amount)`).order('id', { ascending: false })
 
-  if (error) {
-    console.log(error);
-    /* return {
-      true// notFound: true, 
-     }
- // } */
- 
-    //const { data, error } = useSWR('/api/hello', fetcher);
+   */
   return {
     props: {
-      data: invoices
+      data: JSON.parse(JSON.stringify(invoices))
     },
-    revalidate: 5
+   // revalidate: 5
   }
 } 
 

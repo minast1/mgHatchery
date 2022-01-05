@@ -14,7 +14,8 @@
     "isolatedModules": true,
     "jsx": "preserve",
     "sourceMap": true,
-    "outDir": "dist"
+    "outDir": "dist",
+    "experimentalDecorators": true
   },
   "include": ["next-env.d.ts", "**/*.ts", "**/*.tsx"],
   "exclude": ["node_modules"]

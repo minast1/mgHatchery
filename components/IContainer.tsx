@@ -1,11 +1,13 @@
 import { Button, Grid, TextField } from '@material-ui/core'
+import { Item } from '@prisma/client';
+import { Decimal } from '@prisma/client/runtime';
 import React from 'react'
 import { useState } from 'react';
-import { invoiceState, obj, useInvoiceStore } from '../lib/invoiceStore';
+import {  useInvoiceStore } from '../lib/invoiceStore';
 
 
 
-const IContainer = ({ productItem , toggleSnack}: { productItem: obj , toggleSnack: () => void}) => {
+const IContainer = ({ productItem , toggleSnack}: {  productItem: Item , toggleSnack: () => void}) => {
     const setItems = useInvoiceStore(state => state.setItems);
   const [itemAdded, setItemAdded] = useState<boolean>(false);
   const [description, setDescription] = useState<string>('')
@@ -62,7 +64,7 @@ const IContainer = ({ productItem , toggleSnack}: { productItem: obj , toggleSna
                     variant="contained"
                     color="primary"
                     disabled={itemAdded ? true : false}
-          onClick={() => {
+                    onClick={() => {
            
                       if (description === '' || quantity === 0 || rate === 0 ) {
                          toggleSnack()
@@ -72,11 +74,16 @@ const IContainer = ({ productItem , toggleSnack}: { productItem: obj , toggleSna
                        ...productItem,
                         description: description,
                        quantity: quantity,
-                        rate: rate,
+                           rate: rate as unknown as Decimal,
+                        amount: quantity * rate as unknown as Decimal
                          }
-                        //console.log(productItem);
-                         setItems(productItem);
+                        
+                         //(productItem);
+                          setItems(productItem);
                         setItemAdded(true)
+                       // setDescription('');
+                       // setQuantity(0);
+                       // setRate(0);
                       //console.log('please fill the form accordingly!');
                      }
                    

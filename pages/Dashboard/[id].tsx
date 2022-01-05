@@ -1,10 +1,10 @@
 import React from 'react';
 import { makeStyles } from '@material-ui/core/styles';
 import { GetStaticProps, GetStaticPropsContext, GetStaticPaths } from 'next'
-import { useStore } from '../../lib/sessionStore';
+//import { useStore } from '../../lib/sessionStore';
 import { useRouter } from 'next/router'
 import Invoice from '../../components/Invoice';
-import { dataStore, InvoiceItem} from '../../lib/supabaseStore';
+import { dataStore} from '../../lib/supabaseStore';
 //import { supabase } from '../../lib/supabaseClient';
 
 

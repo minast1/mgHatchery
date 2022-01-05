@@ -11,12 +11,12 @@ import { dataStore } from '../lib/supabaseStore';
 import Row from './Row';
 
 
+
 export default function CollapsibleTable() {
 
   const [page, setPage] = React.useState(0)
   const [rowsPerPage, setRowsPerPage] = React.useState(10);
-  const data = dataStore(state => state.data);
-  const setData = dataStore(state => state.setData);
+  const data = dataStore(state => state.data).reverse();
   const updateData = dataStore(state => state.updateData);
 
   const handleChangePage = (event: unknown, newPage: number) => {
@@ -41,7 +41,7 @@ export default function CollapsibleTable() {
 
             <TableCell align="left">CUST. NAME</TableCell>
             
-            <TableCell align="left">AMOUNT</TableCell>
+            <TableCell align="left">AMOUNT PAID</TableCell>
              <TableCell align="left">CUST.CONTACT</TableCell>
             <TableCell align="left">TRANSACTION STATUS</TableCell>
             <TableCell align="center">ACTIONS</TableCell>

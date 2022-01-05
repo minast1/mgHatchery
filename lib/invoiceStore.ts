@@ -1,21 +1,19 @@
 import { FormEvent } from 'react'
 import create from 'zustand'
-import createContext from 'zustand/context'
-import { AuthSession } from '@supabase/supabase-js'
 import { MaterialUiPickersDate } from '@material-ui/pickers/typings/date';
+import { Item } from '@prisma/client';
 
-export type obj = { description: string; rate: number; quantity: number; amount?: number }
 
 
-export interface invoiceState<T extends obj> {
+export interface invoiceState {
    
-    items: T[]
-    setItems: (goods: T) => void
+    items: Item[]
+    setItems: (goods:Item) => void
     resetItems: () => void
 
 }
 
-export const useInvoiceStore =  create<invoiceState<obj>>((set, get) => ({
+export const useInvoiceStore =  create<invoiceState>((set, get) => ({
    
     items: [],
     setItems: (goods) => set(state => ({ items: [...state.items, goods] })),

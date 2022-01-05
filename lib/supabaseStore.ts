@@ -1,22 +1,18 @@
-import { Item } from '@prisma/client';
+import { Item, Status } from '@prisma/client';
 import React from 'react';
 import create from 'zustand'
 
 
 
-export type InvoiceItem = {
-    amount: number
-    description: string
-    quantity: number
-    rate: number
-}
+
 
 export type CustomInvoice = {
     id: number
     address: string
     invoice_id: string
     amount: number
-    date: string
+    status: Status
+    date: string| Date
     name: string
     phone: string | number
     Item: Item[]
@@ -25,9 +21,12 @@ export type CustomInvoice = {
 
 
 export interface supabaseStoreState {
+
     data: CustomInvoice[] 
-    setData: (item: CustomInvoice[]) => void
-    updateData: (items: CustomInvoice[]) => void
+   // setData: (item: CustomInvoice[]) => void
+    updateData: (invoice: CustomInvoice) => void
+    deleteData: (id: number) => void 
+    updateInvoiceStatus: (to:CustomInvoice) => void 
     IPData: CustomInvoice[] // INvoice page data
     setIPData: (item:CustomInvoice[]) => void
 }
@@ -36,9 +35,21 @@ export interface supabaseStoreState {
 
 export const dataStore = create<supabaseStoreState>((set, get) => ({
     data: [],
-    setData: (item) => set(state => ({ data: [...state.data, ...item] })),
-    updateData: (items) => set(state => ({ data: [...items] })),
+    updateData: (invoice) => set(state => ({ data: [...state.data, invoice] })),
+    deleteData: (id) => {
+        const currentData = get().data;
+        const updatedData = currentData.filter((item: CustomInvoice) => item.id != id);
+        set({ data: updatedData });
+    },
     IPData: [],
+    updateInvoiceStatus: (to) => {
+        const currentData = get().data;
+        const updatedData = currentData.map(obj => {
+            return (obj.id === to.id) ? { ...obj, amount: to.amount, status: to.status } : obj
+        });
+        set({ data: updatedData });
+        //update the amount and the status
+    },
     setIPData: (item) => set(state => ({IPData: [...item]}) )
 
     //find a way to override the dataa in  the store

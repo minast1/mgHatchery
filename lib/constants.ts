@@ -43,3 +43,11 @@ export const loginSchema = yup.object({
   //phone: yup.string().required('The phone field is required').length(10, 'phone number must be 10 digits'),
   //passwordConfirm: yup.string().oneOf([yup.ref('password'), null], 'password mismatch!').required('This field is required')
 })
+
+export const InvoiceSchema = yup.object({
+  name: yup.string().required('Customer Name is required'),
+  address: yup.string().required('Customer Address is required'),
+  phone: yup.string().required('Customer Phone Number is required'),
+  amount: yup.string().required('Invoice Amount Payed is required'),
+  date: yup.date().required('Invoice date not set')
+})
