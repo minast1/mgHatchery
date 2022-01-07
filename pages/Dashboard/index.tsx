@@ -57,7 +57,7 @@ export default function Dashboard({ data }: { data: CustomInvoice[] }/*Invoice[]
   // fetch and revalidate data with swr save
  React.useEffect(() => {
 
-    data && state.setData(data.reverse())  //  dataStore.setState({data : data.reverse()});
+    data && state.setData(data)  //  dataStore.setState({data : data.reverse()});
   }, [data]);
   //console.log(data);
   if (loading) return (

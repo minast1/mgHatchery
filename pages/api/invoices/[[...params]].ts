@@ -48,7 +48,8 @@ class InvoiceRouter {
     @Get()
     async getAllInvoices() {
         const invoices = prisma.invoice.findMany({
-            include : {Item: true}
+            include: { Item: true },
+            orderBy: {id : 'desc'}
         })
         return invoices;
     }
