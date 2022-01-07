@@ -87,7 +87,8 @@ export const getStaticProps: GetStaticProps = async ({params}) => {
   })
   const invoice = await res.json();
   return {
-    props : {invoice}
+    props: { invoice },
+       revalidate: 1,
   }
 }
 
