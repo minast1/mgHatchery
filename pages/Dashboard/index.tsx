@@ -107,7 +107,7 @@ export const getStaticProps: GetStaticProps = async () => {
     props: {
       data: invoices //JSON.parse(JSON.stringify(invoices))
     },
-   //revalidate: 1
+   revalidate: 1
   }
 } 
 

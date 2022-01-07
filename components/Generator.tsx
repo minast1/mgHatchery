@@ -46,7 +46,7 @@ const Generator = () => {
   let today = new Date().toLocaleDateString();
 
 
-console.log(invId);
+//console.log(invId);
 
    React.useEffect(() => {
         mounted.current = true; // Will set it to true on mount ...
