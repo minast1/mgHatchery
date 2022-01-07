@@ -16,7 +16,7 @@ export default function CollapsibleTable() {
     const state = useStore()
   const [page, setPage] = React.useState(0)
   const [rowsPerPage, setRowsPerPage] = React.useState(10);
-  const data = state.data.reverse();
+  const data = state.data;
   const updateData =  state.updateData  //dataStore(state => state.updateData);
 
   const handleChangePage = (event: unknown, newPage: number) => {
