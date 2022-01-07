@@ -67,7 +67,7 @@ export const getStaticPaths: GetStaticPaths = async () => {
     params : {id : invoice.id.toString()}
   }))
 
-  return {paths, fallback: false}
+  return {paths, fallback: true}
 }
 
 
