@@ -61,6 +61,7 @@ export default function Dashboard({invoice}: {invoice: CustomInvoice}) {
 
 export const getStaticPaths: GetStaticPaths = async () => {
   const res = await fetch(`${process.env.NEXTAUTH_URL}/api/invoices`, {
+    method : "GET",
     headers: {
       Accept: 'application/json, text/plain, */*',
         'User-Agent': '*',
@@ -78,6 +79,7 @@ export const getStaticPaths: GetStaticPaths = async () => {
 
 export const getStaticProps: GetStaticProps = async ({params}) => {
   const res = await fetch(`${process.env.NEXTAUTH_URL}/api/invoices/${params.id as string}`, {
+    method : "GET",
      headers: {
       Accept: 'application/json, text/plain, */*',
         'User-Agent': '*',
