@@ -29,7 +29,7 @@ export default function Dashboard({invoice}: {invoice: CustomInvoice}) {
    const state = useStore();
 
   
-  if (router.isFallback) return (
+  if (loading) return (
     <Loading/> 
   )
 
@@ -57,7 +57,7 @@ export const getStaticPaths: GetStaticPaths = async () => {
     params : {id : invoice.id.toString()}
   }))
 
-  return {paths, fallback: true}
+  return {paths, fallback: 'blocking'}
 }
 
 
