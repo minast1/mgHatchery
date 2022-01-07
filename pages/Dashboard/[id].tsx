@@ -77,7 +77,12 @@ export const getStaticPaths: GetStaticPaths = async () => {
 
 
 export const getStaticProps: GetStaticProps = async ({params}) => {
-  const res = await fetch(`${process.env.NEXTAUTH_URL}/api/invoices/${params?.id as string}`)
+  const res = await fetch(`${process.env.NEXTAUTH_URL}/api/invoices/${params.id as string}`, {
+     headers: {
+      Accept: 'application/json, text/plain, */*',
+        'User-Agent': '*',
+    }
+  })
   const invoice = await res.json();
   return {
     props : {invoice}
