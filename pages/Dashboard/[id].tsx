@@ -25,27 +25,11 @@ const useStyles = makeStyles((theme) => ({
 export default function Dashboard({invoice}: {invoice: CustomInvoice}) {
   const classes = useStyles();
   const [session, loading] = useSession();
-
+  const router = useRouter();
    const state = useStore();
 
-  //console.log(invoice);
-//React.useEffect(() => {
-    //fetch the invoice data from the api 
- // if (!router.isReady) return;
- // const { id } = router.query;
-  //(async () => {
-  // const invoice = await fetchInvoice(`/api/invoices/${id}`);
-   // setCurrentInvoice(invoice);
-  //})()
   
-     
-  // const selectedInvoice = dataStore.getState().data.find(item => item.id === id as unknown as number);
-   // selectedInvoice && setCurrentInvoice(selectedInvoice)
-  
-   // data && dataStore.setState({data : data.reverse()});
-  //}, [router.isReady]);
-  //console.log(data);
-  if (loading) return (
+  if (router.isFallback) return (
     <Loading/> 
   )
 
