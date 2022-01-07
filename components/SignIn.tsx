@@ -82,7 +82,7 @@ export default function SignIn() {
   const loading = authStore(state => state.loading)
 
   const onSubmit: SubmitHandler<IFormInput> = async (data, e) => {
-    e?.preventDefault();
+  
        authStore.setState({ loading: true });
     data.callbackUrl =  `${process.env.NEXT_PUBLIC_URL}/Dashboard/`
       

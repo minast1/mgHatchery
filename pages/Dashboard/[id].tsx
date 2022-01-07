@@ -63,8 +63,8 @@ export const getStaticPaths: GetStaticPaths = async () => {
   const res = await fetch(`${process.env.NEXTAUTH_URL}/api/invoices`);
   const invoices = await res.json();
 
-  const paths = invoices.map((invoice: Partial<Invoice>) => ({
-    params : {id : invoice.id?.toString()}
+  const paths = invoices.map((invoice: Invoice) => ({
+    params : {id : invoice.id.toString()}
   }))
 
   return {paths, fallback: false}
