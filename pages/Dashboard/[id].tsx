@@ -60,7 +60,12 @@ export default function Dashboard({invoice}: {invoice: CustomInvoice}) {
 }
 
 export const getStaticPaths: GetStaticPaths = async () => {
-  const res = await fetch(`${process.env.NEXTAUTH_URL}/api/invoices`);
+  const res = await fetch(`${process.env.NEXTAUTH_URL}/api/invoices`, {
+    headers: {
+      Accept: 'application/json, text/plain, */*',
+        'User-Agent': '*',
+    }
+  });
   const invoices = await res.json();
 
   const paths = invoices.map((invoice: Invoice) => ({
