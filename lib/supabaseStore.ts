@@ -37,7 +37,7 @@ export const dataStore = () =>
 create<supabaseStoreState>((set, get) => ({
         data: [],
         setData: (item) => set(state => ({data: item})),
-    updateData: (invoice) => set(state => ({ data: [...state.data, invoice] })),
+    updateData: (invoice) => set(state => ({ data: [invoice,...state.data] })),
     deleteData: (id) => {
         const currentData = get().data;
         const updatedData = currentData.filter((item: CustomInvoice) => item.id != id);
