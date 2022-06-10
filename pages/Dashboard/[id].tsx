@@ -45,11 +45,13 @@ export const getStaticPaths: GetStaticPaths = async () => {
       "User-Agent": "*",
     },
   });
-  const invoices = await res.json();
+  const invoices: Invoice[] | [] = await res.json();
 
-  const paths = invoices?.map((invoice: Invoice) => ({
-    params: { id: invoice.id.toString() },
-  }));
+  const paths =
+    invoices.length &&
+    invoices.map((invoice: Invoice) => ({
+      params: { id: invoice.id.toString() },
+    }));
 
   return { paths, fallback: "blocking" };
 };
