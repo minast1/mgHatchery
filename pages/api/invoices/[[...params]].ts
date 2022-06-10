@@ -37,7 +37,9 @@ class InvoiceRouter {
     //GET /api/invoices/email/:id
     @Get('/email/:id')
     public async sendInvoiceMail(@Param('id', ParseNumberPipe) id: number) {
-        console.log('Sending Email......');
+      
+        const invoice = await prisma.invoice.findFirst({ where: { id: id }, include: { Item: true } });
+          console.log('Sending Email......' , invoice);
         return true; 
         }
      
