@@ -15,6 +15,7 @@ export type CustomInvoice = {
     status: Status
     date: string| Date
     name: string
+    email:string 
     phone: string | number
     Item: Item[]
 }

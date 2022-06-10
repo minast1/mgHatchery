@@ -8,7 +8,8 @@ import { Decimal } from '@prisma/client/runtime';
 
  type CustomInvoice = {
     id: number
-    address: string
+     address: string
+    email:string
     invoice_id: string
     amount: number
     status: Status
@@ -32,6 +33,13 @@ class InvoiceRouter {
         if(balance > 0 ) status = 'BALANCE'
         return status
     }
+
+    //GET /api/invoices/email/:id
+    @Get('/email/:id')
+    public async sendInvoiceMail(@Param('id', ParseNumberPipe) id: number) {
+        console.log('Sending Email......');
+        return true; 
+        }
      
      //GET /api/invoices/:id
     @Get('/:id')
@@ -59,7 +67,7 @@ class InvoiceRouter {
     @HttpCode(201)
     async createInvoice(@Body() body: CustomInvoice) {
         
-          const { invoice_id, phone, name, date, amount, address, Item } = body;
+          const { invoice_id, phone, name, date, amount, address, Item , email } = body;
        
         const reducer = (previousValue: number | Decimal, currentValue: number | Decimal) => Number(previousValue) + Number(currentValue);
         //Get the total of the items in the invoice Items list
@@ -70,6 +78,7 @@ class InvoiceRouter {
                 invoice_id: invoice_id,
                 phone: phone as string,
                 name: name,
+                email: email, 
                 address: address,
                 date: date as string,
                 amount: amount ,
