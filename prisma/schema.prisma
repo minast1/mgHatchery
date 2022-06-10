@@ -1,7 +1,6 @@
 datasource db {
   provider             = "mysql"
   url                  = env("DATABASE_URL")
-  //shadowDatabaseUrl    = env("SHADOW_DATABASE_URL")
   referentialIntegrity = "prisma"
 
 }
@@ -16,6 +15,7 @@ model Invoice {
   date       String
   name       String   @db.VarChar(50)
   address    String   @db.VarChar(100)
+  email      String?
   phone      String   @db.Text
   createdAt  DateTime @default(now())
   invoice_id String

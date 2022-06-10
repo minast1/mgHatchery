@@ -22,6 +22,7 @@ import CircularProgress from "@material-ui/core/CircularProgress";
 
 interface IFormInput {
   name: string;
+  email: string;
   phone: string;
   address: string;
   amount: number;
@@ -137,13 +138,14 @@ const Generator = () => {
         <Divider />
         <CardContent>
           <Grid container spacing={3}>
-            <Grid item md={6} xs={12}>
+            <Grid item md={3} xs={12}>
               <Controller
                 name="invoice_id"
                 defaultValue={invId}
                 control={control}
                 render={({ field: { value, onChange } }) => (
                   <TextField
+                    size="small"
                     InputProps={{
                       readOnly: true,
                     }}
@@ -161,7 +163,7 @@ const Generator = () => {
               />
             </Grid>
 
-            <Grid item md={6} xs={12}>
+            <Grid item md={3} xs={12}>
               <Controller
                 name="date"
                 //defaultValue={today as Date}
@@ -169,13 +171,45 @@ const Generator = () => {
                 render={({ field: { value, onChange } }) => (
                   <TextField
                     id="date"
+                    size="small"
                     {...register("date")}
                     label="Date"
+                    style={{ width: "100%" }}
                     type="date"
                     error={!!errors.date}
                     //  onChange={(event)=> setFormData({...formData, date: event.target.value})}
                     placeholder={today}
                     helperText={errors.date?.message}
+                    defaultValue="2022-05-24"
+                    variant="outlined"
+                    InputLabelProps={{
+                      shrink: true,
+                    }}
+                  />
+                )}
+              />
+            </Grid>
+
+            <Grid item md={6} xs={12}>
+              <Controller
+                name="email"
+                //defaultValue={today as Date}
+                control={control}
+                render={({ field: { value, onChange } }) => (
+                  <TextField
+                    id="email"
+                    size="small"
+                    {...register("email")}
+                    label="Email"
+                    error={!!errors.email}
+                    //  onChange={(event)=> setFormData({...formData, date: event.target.value})}
+                    placeholder="This field is optional"
+                    style={{ width: "100%" }}
+                    helperText={
+                      errors.email
+                        ? errors.email.message
+                        : "Provide Email Address to Send Invoice to"
+                    }
                     // defaultValue={`${today}`}//"2021-05-24"
                     variant="outlined"
                     InputLabelProps={{
@@ -192,6 +226,7 @@ const Generator = () => {
                 control={control}
                 render={({ field: { value, onChange } }) => (
                   <TextField
+                    size="small"
                     fullWidth
                     {...register("name")}
                     label="Customer Name"
@@ -214,6 +249,7 @@ const Generator = () => {
                 render={({ field: { value, onChange } }) => (
                   <TextField
                     fullWidth
+                    size="small"
                     {...register("address")}
                     error={!!errors.address}
                     helperText={errors.address?.message}
@@ -234,6 +270,7 @@ const Generator = () => {
                 render={({ field: { value, onChange } }) => (
                   <TextField
                     fullWidth
+                    size="small"
                     {...register("phone")}
                     error={!!errors.phone}
                     helperText={errors.phone?.message}
@@ -253,6 +290,7 @@ const Generator = () => {
                 defaultValue={0}
                 render={({ field: { value, onChange } }) => (
                   <TextField
+                    size="small"
                     fullWidth
                     // defaultValue={value}
                     {...register("amount")}

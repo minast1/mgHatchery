@@ -44,10 +44,21 @@ export const loginSchema = yup.object({
   //passwordConfirm: yup.string().oneOf([yup.ref('password'), null], 'password mismatch!').required('This field is required')
 })
 
-export const InvoiceSchema = yup.object({
+export const InvoiceSchema = yup.object().shape({
   name: yup.string().required('Customer Name is required'),
+  email: yup.string().when("email", (val:string) => {
+  if (val) {
+      if (val.length > 0) {
+      return yup.string().email().required("Customer Email is required")
+    } else {
+      return yup.string().email().notRequired();
+    }
+    } else {
+      return yup.string().notRequired();
+    }
+  }),
   address: yup.string().required('Customer Address is required'),
   phone: yup.string().required('Customer Phone Number is required'),
   amount: yup.string().required('Invoice Amount Payed is required'),
   date: yup.date().required('Invoice date not set')
-})
+}, [['email', 'email']])
