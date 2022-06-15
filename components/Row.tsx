@@ -31,6 +31,7 @@ import { useForm, Controller, SubmitHandler } from "react-hook-form";
 import CircularProgress from "@material-ui/core/CircularProgress";
 import EmailIcon from "@material-ui/icons/Email";
 import { format } from "date-fns";
+import toast, { Toaster } from "react-hot-toast";
 
 const useRowStyles = makeStyles({
   root: {
@@ -124,12 +125,17 @@ function Row({ invoiceItem }: { invoiceItem: CustomInvoice }) {
   const sendInvoiceMail = (invoiceId: number) => {
     fetch(`/api/invoices/email/${invoiceId}`, {
       method: "GET",
-    });
+    })
+      .then((response) => response.json())
+      .then((data) =>
+        toast.success(`${data.message}`, { position: "bottom-right" })
+      );
   };
   //console.log(amts);
   return (
     <React.Fragment>
       <TableRow className={classes.root} hover>
+        <Toaster />
         <TableCell>
           <IconButton
             aria-label="expand row"

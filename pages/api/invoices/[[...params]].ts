@@ -56,7 +56,9 @@ class InvoiceRouter {
             templateId: 'd-e13f0cf1d9d64db08386d1e3f722d3be',
             dynamicTemplateData: stringified_invoice
         }
-        sgMail.send(msg).then(() => {console.log('Sending...')}, error => {
+        sgMail.send(msg).then(() => {
+            console.log('Mail Sent...!')
+        }, error => {
     console.error(error);
 
     if (error.response) {
@@ -64,7 +66,7 @@ class InvoiceRouter {
     }
   });;
          /// console.log('Sending Email......' , JSON.stringify(stringified_invoice));
-        return true; 
+         return { message: 'Mail Sent...!' }
         }
      
      //GET /api/invoices/:id
