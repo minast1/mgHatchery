@@ -128,7 +128,10 @@ function Row({ invoiceItem }: { invoiceItem: CustomInvoice }) {
     })
       .then((response) => response.json())
       .then((data) =>
-        toast.success(`${data.message}`, { position: "bottom-right" })
+        toast.success(`${data.message}`, {
+          position: "top-right",
+          duration: 6000,
+        })
       );
   };
   //console.log(amts);
