@@ -30,6 +30,7 @@ import TextField from "@material-ui/core/TextField";
 import { useForm, Controller, SubmitHandler } from "react-hook-form";
 import CircularProgress from "@material-ui/core/CircularProgress";
 import EmailIcon from "@material-ui/icons/Email";
+import { format } from "date-fns";
 
 const useRowStyles = makeStyles({
   root: {
@@ -229,7 +230,7 @@ function Row({ invoiceItem }: { invoiceItem: CustomInvoice }) {
                 gutterBottom
                 component="div"
               >
-                {`Tansaction date: ${invoiceItem.date}`}
+                {`Tansaction date: ${format(new Date(invoiceItem.date), "PP")}`}
               </Typography>
               <Table size="small" aria-label="purchases">
                 <TableHead>

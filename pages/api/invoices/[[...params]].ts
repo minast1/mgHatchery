@@ -4,6 +4,7 @@ import { createHandler, Get, Post, Put, Delete, HttpCode, Query, Body, Param, Pa
 import prisma from '../../../lib/prisma';
 import { Decimal } from '@prisma/client/runtime';
 import sgMail from '@sendgrid/mail';
+import { format } from 'date-fns';
 
 
  type CustomInvoice = {
@@ -37,15 +38,32 @@ class InvoiceRouter {
     //GET /api/invoices/email/:id
     @Get('/email/:id')
     public async sendInvoiceMail(@Param('id', ParseNumberPipe) id: number) {
-      
-        const invoice = await prisma.invoice.findFirst({ where: { id: id }, include: { Item: true } });
         sgMail.setApiKey(process.env.SENDGRID_API_KEY);
+        
+        const invoice = await prisma.invoice.findFirst({ where: { id: id }, include: { Item: true } });
+
+        const reducer = (accumulator: number, currentValue: number) => Number(accumulator) + Number(currentValue);
+        const total: number | Decimal = invoice.Item.map(({ amount }) => Number(amount)).reduce(reducer);
+
+        const stringified_invoice = {
+            ...invoice, date: format(new Date(invoice.date), "PPpp"),
+            total: total,
+            paid: invoice.amount
+        }
         const msg = {
             to: invoice.email,
-            from: 'mgventures1@outlook.com'
+            from: 'edmarfo1@hotmail.com',//'mgventures1@outlook.com',
+            templateId: 'd-e13f0cf1d9d64db08386d1e3f722d3be',
+            dynamicTemplateData: stringified_invoice
         }
+        sgMail.send(msg).then(() => {console.log('Sending...')}, error => {
+    console.error(error);
 
-          console.log('Sending Email......' , invoice);
+    if (error.response) {
+      console.error(error.response.body)
+    }
+  });;
+         /// console.log('Sending Email......' , JSON.stringify(stringified_invoice));
         return true; 
         }
      
