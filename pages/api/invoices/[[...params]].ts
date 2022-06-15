@@ -3,7 +3,7 @@ import { createHandler, Get, Post, Put, Delete, HttpCode, Query, Body, Param, Pa
 //import { CustomInvoice } from '../../../lib/supabaseStore';
 import prisma from '../../../lib/prisma';
 import { Decimal } from '@prisma/client/runtime';
-
+import sgMail from '@sendgrid/mail';
 
 
  type CustomInvoice = {
@@ -39,6 +39,12 @@ class InvoiceRouter {
     public async sendInvoiceMail(@Param('id', ParseNumberPipe) id: number) {
       
         const invoice = await prisma.invoice.findFirst({ where: { id: id }, include: { Item: true } });
+        sgMail.setApiKey(process.env.SENDGRID_API_KEY);
+        const msg = {
+            to: invoice.email,
+            from: 'mgventures1@outlook.com'
+        }
+
           console.log('Sending Email......' , invoice);
         return true; 
         }
