@@ -66,7 +66,7 @@ class InvoiceRouter {
     }
   });;
          /// console.log('Sending Email......' , JSON.stringify(stringified_invoice));
-         return { message: 'Mail Sent...!' }
+         return { message: 'Invoice Mail Sent Successfully...!' }
         }
      
      //GET /api/invoices/:id

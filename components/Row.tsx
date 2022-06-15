@@ -135,7 +135,6 @@ function Row({ invoiceItem }: { invoiceItem: CustomInvoice }) {
   return (
     <React.Fragment>
       <TableRow className={classes.root} hover>
-        <Toaster />
         <TableCell>
           <IconButton
             aria-label="expand row"

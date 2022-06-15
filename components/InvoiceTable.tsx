@@ -9,6 +9,7 @@ import Paper from "@material-ui/core/Paper";
 import { TableBody, TableFooter, TablePagination } from "@material-ui/core";
 import { dataStore, useStore } from "../lib/supabaseStore";
 import Row from "./Row";
+import { Toaster } from "react-hot-toast";
 
 export default function CollapsibleTable() {
   const state = useStore();
@@ -29,6 +30,7 @@ export default function CollapsibleTable() {
 
   return (
     <TableContainer component={Paper}>
+      <Toaster />
       <Table aria-label="collapsible table">
         <TableHead>
           <TableRow>
