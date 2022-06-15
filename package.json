@@ -16,6 +16,7 @@
     "@material-ui/pickers": "^3.3.10",
     "@next-auth/prisma-adapter": "^0.5.4",
     "@prisma/client": "^3.7.0",
+    "@sendgrid/mail": "^7.7.0",
     "@storyofams/next-api-decorators": "^1.6.0",
     "@supabase/supabase-js": "^1.7.6",
     "bcrypt": "^5.0.1",
