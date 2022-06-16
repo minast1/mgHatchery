@@ -1,4 +1,4 @@
-# Supabase Next.js User Management
+# Next.js Invoice Creation and Management App
 
 This example will set you up for a very common situation: users can sign up with a magic link and then update their account with public profile information, including a profile image.
 
@@ -13,9 +13,10 @@ This demonstrates how to use:
 
 - Frontend:
   - [Next.js](https://github.com/vercel/next.js) - a React framework for production.
-  - [Supabase.js](https://supabase.io/docs/library/getting-started) for user management and realtime data syncing.
+  - [Material Ui](https://supabase.io/docs/library/getting-started) for user management and realtime data syncing.
 - Backend:
-  - [app.supabase.io](https://app.supabase.io/): hosted Postgres database with restful API for usage with Supabase.js.
+  - [PlanetScale](https://app.planetscale.com/): Serverless Mysql database
+  - [TwilloSendgrid](https://app.sendgrid.com/): Serveless Email sending service
 
 ## Instant deploy
 
