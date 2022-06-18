@@ -53,7 +53,6 @@ class InvoiceRouter {
         }
         const msg = {
             to: invoice.email,
-            subject: 'Invoice Reciept',
             from: 'edmarfo1@hotmail.com',//'mgventures1@outlook.com',
             templateId: 'd-e13f0cf1d9d64db08386d1e3f722d3be',
             dynamicTemplateData: stringified_invoice
