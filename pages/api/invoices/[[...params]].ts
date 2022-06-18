@@ -22,6 +22,7 @@ import { format } from 'date-fns';
  
 class InvoiceRouter {
    
+    
 
     private getInvoiceStatus(amount: number, itemsTotal: number): Status {
         let status: Status = 'UNPAID';
@@ -52,19 +53,22 @@ class InvoiceRouter {
         }
         const msg = {
             to: invoice.email,
+            subject: 'Invoice Reciept',
             from: 'edmarfo1@hotmail.com',//'mgventures1@outlook.com',
             templateId: 'd-e13f0cf1d9d64db08386d1e3f722d3be',
             dynamicTemplateData: stringified_invoice
         }
-        sgMail.send(msg).then(() => {
-            console.log('Mail Sent...!')
-        }, error => {
-    console.error(error);
+        try {
+             await sgMail.send(msg)
+        } catch (error) {
+            console.log(error);
 
     if (error.response) {
-      console.error(error.response.body)
+        console.error(error.response.body)
+        return 
     }
-  });;
+        }
+      
          /// console.log('Sending Email......' , JSON.stringify(stringified_invoice));
          return { message: 'Invoice Mail Sent Successfully...!' }
         }
